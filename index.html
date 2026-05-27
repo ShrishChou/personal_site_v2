@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shrish Choudhary — MIT Researcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-brand">SC</div>
+      <div class="loader-line"><div id="loader-bar"></div></div>
+      <div id="loader-label" class="loader-label">INITIALIZING...</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav id="main-nav">
+    <div class="nav-left">
+      <span class="nav-brand">SC</span>
+      <span class="nav-sep">//</span>
+      <span class="nav-brand-full">SHRISH.CHOUDHARY</span>
+    </div>
+    <div class="nav-center">
+      <button class="nav-link active" data-section="0">INTRO</button>
+      <button class="nav-link" data-section="1">EXPERIENCE</button>
+      <button class="nav-link" data-section="2">RESEARCH</button>
+      <button class="nav-link" data-section="5">PROJECTS</button>
+      <button class="nav-link" data-section="6">CONTACT</button>
+    </div>
+    <div class="nav-right">
+      <div class="nav-social">
+        <a href="https://linkedin.com/in/shrishchoudhary" class="social-btn" target="_blank" rel="noopener">LINKEDIN</a>
+        <a href="https://github.com/ShrishChou" class="social-btn" target="_blank" rel="noopener">GITHUB</a>
+        <a href="assets/resume.pdf" class="social-btn" target="_blank">RESUME</a>
+      </div>
+      <span class="nav-divider"></span>
+      <span class="status-dot"></span>
+      <span class="status-text">CAMBRIDGE, MA</span>
+    </div>
+    <div class="nav-progress-bar"><div id="nav-progress-fill"></div></div>
+  </nav>
+
+  <!-- VIDEO WRAPPER -->
+  <div id="video-wrapper">
+    <video id="bg-video" muted playsinline preload="auto">
+      <source src="assets/website_horizontal.mp4" type="video/mp4">
+    </video>
+    <div id="reading-vignette"></div>
+
+    <!-- PANEL 0: INTRO — video already contains all text, no overlay needed -->
+    <section class="content-panel" id="panel-0"></section>
+
+    <!-- PANEL 1: EXPERIENCE — section heading + two quadrant boxes -->
+    <section class="content-panel exp-panel" id="panel-1">
+
+      <!-- Section heading: top-left, above eBay box -->
+      <div class="exp-section-heading">
+        <h2 class="exp-heading-text">WORK<br><span>EXPERIENCE</span></h2>
+      </div>
+
+      <!-- eBay: top-left quadrant -->
+      <div class="exp-box exp-box-ebay">
+        <div class="exp-box-eyebrow">// eBay_ML.ENGINEERING</div>
+        <div class="exp-box-company">eBay Inc.</div>
+        <div class="exp-box-role">Machine Learning Engineer · Intern · Summer 2024</div>
+        <ul class="exp-box-bullets">
+          <li>First ML model in payments history hitting production in <strong>US, UK &amp; Germany</strong></li>
+          <li><strong>+22%</strong> checkout conversion via XGBoost + neural net personalization</li>
+          <li>End-to-end pipeline deployed on AWS SageMaker at scale</li>
+        </ul>
+        <div class="exp-box-tags">
+          <span class="tag small">ML PIPELINE</span>
+          <span class="tag small">AWS SAGEMAKER</span>
+          <span class="tag small tag-accent">PATENT HOLDER</span>
+        </div>
+      </div>
+
+      <!-- Multiply Labs: bottom-right quadrant -->
+      <div class="exp-box exp-box-multiply">
+        <div class="exp-box-eyebrow">// MULTIPLY_LABS.ROBOTICS</div>
+        <div class="exp-box-company">Multiply Labs</div>
+        <div class="exp-box-role">Robotics Engineering · Pharma Automation</div>
+        <ul class="exp-box-bullets">
+          <li>Pharma automation via robotic arm manipulation systems</li>
+          <li>Imitation learning + RL for dexterous pick-and-place</li>
+          <li>Deployed control policies in real-world manufacturing</li>
+        </ul>
+        <div class="exp-box-tags">
+          <span class="tag small">ROBOTICS</span>
+          <span class="tag small tag-accent">IMITATION LEARNING</span>
+          <span class="tag small tag-accent">RL</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- PANEL 2: RESEARCH_1 — optics patent, right-third spotlight -->
+    <section class="content-panel research-panel" id="panel-2">
+      <div class="rp-header">
+        <div class="section-eyebrow">// RESEARCH.PUBLICATIONS</div>
+        <h2 class="rp-section-title">RESEARCH &amp;<br><span class="title-accent">PATENTS</span></h2>
+      </div>
+      <div class="rp-spotlight rp-spotlight--right-third">
+        <div class="rp-content">
+          <div class="rp-badge">◆ PATENT HOLDER · 3 PAPERS · 2ND AUTHOR</div>
+          <div class="rp-item-title">Optics Research</div>
+          <div class="rp-venue">3 Publications · 2nd Author · Patent Holder</div>
+          <p class="rp-desc">Research in applied optics producing a patent and three peer-reviewed publications. Contributions span optical system design, computational imaging, and novel sensing modalities for high-precision measurement.</p>
+          <div class="research-tags">
+            <span class="tag small tag-accent">PATENT HOLDER</span>
+            <span class="tag small tag-accent">2ND AUTHOR</span>
+            <span class="tag small">OPTICS</span>
+            <span class="tag small">3 PAPERS</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 3: RESEARCH_2 — tactile robotics, left-half blur with text + right-quarter blur -->
+    <section class="content-panel research-panel" id="panel-3">
+      <div class="rp-header">
+        <div class="section-eyebrow">// RESEARCH.PUBLICATIONS</div>
+        <h2 class="rp-section-title">RESEARCH &amp;<br><span class="title-accent">PATENTS</span></h2>
+      </div>
+      <div class="rp-spotlight rp-spotlight--left-half">
+        <div class="rp-content">
+          <div class="rp-badge">◆ ACTIVE — MIT IMPROBABLE AI LAB</div>
+          <div class="rp-item-title">Tactile Robotics &amp;<br>Diffusion Model Control</div>
+          <div class="rp-venue">Science Journal · 2nd Author · Cambridge, MA</div>
+          <p class="rp-desc">Training dexterous robotic hands using high-resolution tactile sensor arrays and diffusion-based control policies. State-of-the-art performance on contact-rich manipulation benchmarks.</p>
+          <div class="research-tags">
+            <span class="tag small">DIFFUSION MODELS</span>
+            <span class="tag small">TACTILE SENSING</span>
+            <span class="tag small tag-accent">2ND AUTHOR</span>
+            <span class="tag small tag-accent">PUBLISHED</span>
+          </div>
+        </div>
+      </div>
+      <div class="rp-blur-cap rp-blur-cap--right"></div>
+    </section>
+
+    <!-- PANEL 4: RESEARCH_3 — Harvard Medical, left-3/4 blur with text -->
+    <section class="content-panel research-panel" id="panel-4">
+      <div class="rp-header">
+        <div class="section-eyebrow">// RESEARCH.PUBLICATIONS</div>
+        <h2 class="rp-section-title">RESEARCH &amp;<br><span class="title-accent">PATENTS</span></h2>
+      </div>
+      <div class="rp-spotlight rp-spotlight--left-3q">
+        <div class="rp-content">
+          <div class="rp-badge">◆ DEPLOYED · HARVARD MEDICAL SCHOOL</div>
+          <div class="rp-item-title">Infection Detection CV Pipeline</div>
+          <div class="rp-venue">Harvard Medical School · Computer Vision · 2024</div>
+          <p class="rp-desc">Real-time CV system detecting infection markers in clinical microscopy images. Deployed in active clinical trial with state-of-the-art sensitivity on pathogen detection benchmarks.</p>
+          <div class="research-tags">
+            <span class="tag small tag-accent">HARVARD MEDICAL</span>
+            <span class="tag small">COMPUTER VISION</span>
+            <span class="tag small">CLINICAL DEPLOYMENT</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 5: PROJECTS -->
+    <section class="content-panel" id="panel-5">
+      <div class="panel-inner">
+        <div class="section-eyebrow">// PROJECTS.INIT</div>
+        <h2 class="section-title">SELECTED<br><span class="title-accent">PROJECTS</span></h2>
+        <div class="project-grid">
+          <div class="project-item featured">
+            <div class="project-number">01</div>
+            <div class="project-content">
+              <div class="project-title">2D → 3D Reconstruction Pipeline</div>
+              <div class="project-award"><span class="tag tag-accent small">YC GRANT RECIPIENT</span></div>
+              <p class="project-desc">Novel pipeline reconstructing photorealistic 3D scenes from 2D image sequences. Awarded Y Combinator Grant for commercial potential in AR/VR and robotics applications.</p>
+              <div class="project-stack">Python · NeRF · PyTorch · AWS</div>
+            </div>
+          </div>
+          <div class="project-item">
+            <div class="project-number">02</div>
+            <div class="project-content">
+              <div class="project-title">Tennis Ball Robot</div>
+              <p class="project-desc">Autonomous robot tracking and intercepting tennis balls in real-time using computer vision and PID motor control.</p>
+              <div class="project-stack">C++ · OpenCV · ROS · PID</div>
+            </div>
+          </div>
+          <div class="project-item">
+            <div class="project-number">03</div>
+            <div class="project-content">
+              <div class="project-title">On-Device ML Pipeline</div>
+              <p class="project-desc">Quantized YOLO deployment on embedded hardware achieving real-time object detection with minimal power.</p>
+              <div class="project-stack">TFLite · YOLO · Python · C++</div>
+            </div>
+          </div>
+          <div class="project-item">
+            <div class="project-number">04</div>
+            <div class="project-content">
+              <div class="project-title">eBay Checkout ML System</div>
+              <p class="project-desc">End-to-end ML recommendation system improving checkout conversion +22%. Patent holder for the architecture.</p>
+              <div class="project-stack">XGBoost · PyTorch · AWS · PostgreSQL</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 6: CONTACT -->
+    <section class="content-panel" id="panel-6">
+      <div class="panel-inner">
+        <div class="section-eyebrow">// CONTACT.INIT</div>
+        <h2 class="section-title">GET IN<br><span class="title-accent">TOUCH</span></h2>
+        <div class="contact-grid">
+          <a class="contact-item" href="mailto:shrishc@mit.edu">
+            <span class="contact-label">EMAIL</span>
+            <span class="contact-value">shrishc@mit.edu</span>
+          </a>
+          <a class="contact-item" href="https://github.com/ShrishChou" target="_blank" rel="noopener">
+            <span class="contact-label">GITHUB</span>
+            <span class="contact-value">github.com/ShrishChou</span>
+          </a>
+          <a class="contact-item" href="https://linkedin.com/in/shrishchoudhary" target="_blank" rel="noopener">
+            <span class="contact-label">LINKEDIN</span>
+            <span class="contact-value">linkedin.com/in/shrishchoudhary</span>
+          </a>
+          <div class="contact-item">
+            <span class="contact-label">LOCATION</span>
+            <span class="contact-value">Cambridge, MA · MIT '27</span>
+          </div>
+        </div>
+        <div class="contact-footer">
+          <span class="status-dot"></span>
+          Available for research collaborations &amp; internship opportunities
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SECTION INDICATORS -->
+  <div id="section-indicators">
+    <div class="indicator active" data-section="0"><div class="indicator-dot"></div><div class="indicator-label">INTRO</div></div>
+    <div class="indicator" data-section="1"><div class="indicator-dot"></div><div class="indicator-label">EXP</div></div>
+    <div class="indicator" data-section="2"><div class="indicator-dot"></div><div class="indicator-label">RES</div></div>
+    <div class="indicator" data-section="5"><div class="indicator-dot"></div><div class="indicator-label">PROJ</div></div>
+    <div class="indicator" data-section="6"><div class="indicator-dot"></div><div class="indicator-label">CONTACT</div></div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div id="status-bar">
+    <span class="status-left">SYS://MIT_EDU &nbsp;&nbsp; shrishc@mit.edu</span>
+    <span id="scroll-hint"><span class="scroll-icon">↓</span> SCROLL TO EXPLORE</span>
+    <span class="status-right">IMPROBABLE_AI_LAB // EBAY_ML // YC_GRANT // PATENT_HOLDER &nbsp; <span id="video-time">0:00</span></span>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
