@@ -70,15 +70,41 @@
   setTimeout(() => { if (!siteShown) showSite(); }, 7000);
 
   // ─── TAB VISIBILITY / BFCACHE ────────────────────────────────
+  // The browser suspends the video decoder when the tab is hidden.
+  // Paused seeks on a suspended decoder produce no visual output.
+  // We play() to wake the decoder, wait for requestVideoFrameCallback
+  // to confirm a real frame was painted, then pause and unlock scroll.
   function resumeAfterHidden() {
     if (!siteShown) return;
-    ++transitionToken;
+    const myToken = ++transitionToken;
     isTransitioning = false;
     lastScrollTime  = 0;
-    scrollUnlockAt  = 0;
+    scrollUnlockAt  = Date.now() + 3000; // keep scroll locked during warm-up
+
+    const targetTime = PIN_CONFIG[currentPin].time;
     panels.forEach((p, i) => setCardVisual(p, i === currentPin ? 1 : 0));
-    video.pause();
-    video.currentTime = PIN_CONFIG[currentPin].time;
+
+    function settle() {
+      if (transitionToken !== myToken) { scrollUnlockAt = 0; return; }
+      video.currentTime = targetTime;
+      video.pause();
+      scrollUnlockAt = 0;
+    }
+
+    const p = video.play();
+    if (p instanceof Promise) {
+      p.then(() => {
+        if (transitionToken !== myToken) { scrollUnlockAt = 0; return; }
+        video.currentTime = targetTime;
+        if (typeof video.requestVideoFrameCallback === 'function') {
+          video.requestVideoFrameCallback(settle);
+        } else {
+          setTimeout(settle, 200);
+        }
+      }).catch(() => { video.currentTime = targetTime; scrollUnlockAt = 0; });
+    } else {
+      settle();
+    }
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -141,34 +167,78 @@
   }
 
   // ─── SCRUB VIDEO ──────────────────────────────────────────────
-  // All animation is done by seeking a *paused* video via rAF.
-  // Seeking currentTime on a paused video is always a genuine decode+render —
-  // it needs no video.play(), no playbackRate, and no user-gesture priming.
-  // This makes it work identically on first load, after tab-return, and on
-  // every subsequent scroll.
+  // play() wakes a suspended decoder (tab-return). RVFC confirms a real
+  // frame was painted before we touch currentTime — cold-decoder writes
+  // are silently dropped.
   //
-  // Scroll: 0.75× · Nav buttons: 1.5×  (both directions)
+  // FORWARD (scroll 0.75×, nav 1.5×): pause natural playback, then rAF
+  //   loop of forward seeks on the now-live decoder. Smooth at 60 fps.
+  //
+  // BACKWARD: a sequence of backward seeks would require the decoder to
+  //   find the previous keyframe and re-decode on every tick — always
+  //   choppy. Instead we do ONE instant seek to the target while the
+  //   decoder is live, then a second RVFC to confirm the target frame
+  //   is painted before calling done(). The three-phase panel fade
+  //   (fade-out → scrub → fade-in) already hides the video cut.
   function scrubToTime(targetTime, fast, myToken, done) {
     const startVideoTime = video.currentTime;
     const forward        = targetTime > startVideoTime + 0.02;
     const rate           = fast ? 1.5 : 0.75;
 
-    video.pause();
-
+    // Forward-only rAF loop
     let startTS = null;
     function step(now) {
-      if (transitionToken !== myToken) return;
+      if (transitionToken !== myToken) { video.pause(); return; }
       if (startTS === null) startTS = now;
       const elapsed = (now - startTS) / 1000;
-      const next = forward
-        ? Math.min(startVideoTime + elapsed * rate, targetTime)
-        : Math.max(startVideoTime - elapsed * rate, targetTime);
+      const next = Math.min(startVideoTime + elapsed * rate, targetTime);
       video.currentTime = next;
-      const reached = forward ? next >= targetTime - 0.02 : next <= targetTime + 0.02;
-      if (reached) { video.currentTime = targetTime; done(); }
+      if (next >= targetTime - 0.02) { video.currentTime = targetTime; done(); }
       else requestAnimationFrame(step);
     }
-    requestAnimationFrame(step);
+
+    function beginLoop() {
+      if (transitionToken !== myToken) { video.pause(); return; }
+
+      if (!forward) {
+        // Backward: single instant seek on the live decoder, then wait
+        // for the target frame to actually be painted before calling done().
+        video.currentTime = targetTime;
+        if (typeof video.requestVideoFrameCallback === 'function') {
+          video.requestVideoFrameCallback(() => {
+            if (transitionToken !== myToken) { video.pause(); return; }
+            video.pause();
+            done();
+          });
+        } else {
+          setTimeout(() => {
+            if (transitionToken !== myToken) return;
+            video.pause();
+            done();
+          }, 80);
+        }
+        return;
+      }
+
+      // Forward: stop natural 1× playback, snap to correct start, then rAF.
+      video.pause();
+      video.currentTime = startVideoTime;
+      requestAnimationFrame(step);
+    }
+
+    const p = video.play();
+    if (p instanceof Promise) {
+      p.then(() => {
+        if (transitionToken !== myToken) { video.pause(); return; }
+        if (typeof video.requestVideoFrameCallback === 'function') {
+          video.requestVideoFrameCallback(beginLoop);
+        } else {
+          beginLoop();
+        }
+      }).catch(() => beginLoop());
+    } else {
+      beginLoop();
+    }
   }
 
   // ─── GO TO PIN ────────────────────────────────────────────────

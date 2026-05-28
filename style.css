@@ -132,16 +132,44 @@ html,body {
 .social-btn {
   font-family:var(--font);
   font-size:8px; letter-spacing:.22em;
-  color:var(--muted);
   text-decoration:none;
-  padding:3px 9px;
-  border:1px solid var(--border);
-  transition:color .2s ease, border-color .2s ease;
+  padding:4px 11px;
+  border:1px solid;
+  transition:color .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
   white-space:nowrap;
 }
-.social-btn:hover {
-  color:var(--cyan);
-  border-color:var(--cyan-border);
+.social-btn--linkedin {
+  color:#4a9eff;
+  border-color:rgba(74,158,255,.35);
+  background:rgba(74,158,255,.06);
+}
+.social-btn--linkedin:hover {
+  color:#fff;
+  border-color:#4a9eff;
+  background:rgba(74,158,255,.15);
+  box-shadow:0 0 12px rgba(74,158,255,.25);
+}
+.social-btn--github {
+  color:#00e5a0;
+  border-color:rgba(0,229,160,.35);
+  background:rgba(0,229,160,.06);
+}
+.social-btn--github:hover {
+  color:#fff;
+  border-color:#00e5a0;
+  background:rgba(0,229,160,.15);
+  box-shadow:0 0 12px rgba(0,229,160,.25);
+}
+.social-btn--resume {
+  color:var(--orange);
+  border-color:rgba(255,107,53,.35);
+  background:rgba(255,107,53,.06);
+}
+.social-btn--resume:hover {
+  color:#fff;
+  border-color:var(--orange);
+  background:rgba(255,107,53,.15);
+  box-shadow:0 0 12px rgba(255,107,53,.25);
 }
 
 .nav-divider {
@@ -777,13 +805,44 @@ a.contact-item:hover { border-color:var(--cyan-dim); background:rgba(0,229,255,.
   font-size:8.5px; letter-spacing:.16em; color:var(--muted);
 }
 #scroll-hint {
-  color:var(--cyan); opacity:.65; font-size:9px;
-  letter-spacing:.22em;
-  transition:opacity .5s ease;
+  position: fixed;
+  top: 135px;
+  right: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  color: var(--cyan);
+  font-family: var(--font);
+  font-size: 14px;
+  letter-spacing: .22em;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 90;
+  text-shadow: 0 0 18px rgba(0,229,255,.5);
+  animation: scroll-hint-fade-in 0.5s ease forwards, scroll-hint-flash 2s ease-in-out 1.4s infinite;
+  transition: opacity .6s ease;
 }
-#scroll-hint.hidden { opacity:0; pointer-events:none; }
-.scroll-icon { animation:bounce 2s ease infinite; display:inline-block; }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
+#scroll-hint svg {
+  width: 30px;
+  height: 30px;
+  align-self: flex-end;
+  filter: drop-shadow(0 0 8px rgba(0,229,255,.6));
+  animation: scroll-hint-bounce 1.6s ease-in-out infinite;
+}
+#scroll-hint.hidden { opacity: 0; }
+@keyframes scroll-hint-bounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(5px); }
+}
+@keyframes scroll-hint-fade-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scroll-hint-flash {
+  0%,100% { opacity: 1; text-shadow: 0 0 18px rgba(0,229,255,.5); }
+  50%      { opacity: .25; text-shadow: none; }
+}
 
 /* ============================================================
    SCAN-LINE TEXTURE (subtle)
