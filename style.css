@@ -1040,10 +1040,9 @@ body::after {
   .exp-box-eyebrow  { font-size: 7px; margin-bottom: 5px; }
   .exp-box-company  { font-size: 16px; margin-bottom: 3px; }
   .exp-box-role     { font-size: 8px; margin-bottom: 6px; }
-  /* Show only first bullet as one-line description; hide rest; restore tags */
+  /* Show all bullets on mobile */
   .exp-box-bullets  { display: block; margin-bottom: 8px; }
-  .exp-box-bullets li           { font-size: 9px; line-height: 1.45; padding-left: 14px; margin-bottom: 0; }
-  .exp-box-bullets li:nth-child(n+2) { display: none; }
+  .exp-box-bullets li { font-size: 9px; line-height: 1.45; padding-left: 14px; margin-bottom: 2px; }
   .exp-box-tags     { gap: 4px; }
   .exp-box-tags .tag,
   .exp-box-tags .tag.small { font-size: 7px; padding: 2px 6px; }
@@ -1117,10 +1116,9 @@ body::after {
   .proj-box-eyebrow { font-size: 7px; margin-bottom: 5px; }
   .proj-box-title   { font-size: 16px; margin-bottom: 3px; }
   .proj-box-role    { font-size: 8px; margin-bottom: 6px; }
-  /* Show only first bullet as one-line description; hide rest and tags */
+  /* Show all bullets on mobile */
   .proj-box-bullets { display: block; margin-bottom: 10px; }
-  .proj-box-bullets li           { font-size: 9px; line-height: 1.45; padding-left: 14px; margin-bottom: 0; }
-  .proj-box-bullets li:nth-child(n+2) { display: none; }
+  .proj-box-bullets li { font-size: 9px; line-height: 1.45; padding-left: 14px; margin-bottom: 2px; }
   .proj-box-tags    { display: none; }
 
   /* ── CONTACT PANEL ── */
