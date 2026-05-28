@@ -32,7 +32,7 @@
       <button class="nav-link" data-section="1">EXPERIENCE</button>
       <button class="nav-link" data-section="2">RESEARCH</button>
       <button class="nav-link" data-section="5">PROJECTS</button>
-      <button class="nav-link" data-section="6">CONTACT</button>
+      <button class="nav-link" data-section="8">CONTACT</button>
     </div>
     <div class="nav-right">
       <div class="nav-social">
@@ -50,7 +50,7 @@
   <!-- VIDEO WRAPPER -->
   <div id="video-wrapper">
     <video id="bg-video" muted playsinline preload="auto">
-      <source src="assets/website_horizontal.mp4" type="video/mp4">
+      <source src="assets/website_horizontal_scrub.mp4" type="video/mp4">
     </video>
     <div id="reading-vignette"></div>
 
@@ -101,117 +101,146 @@
 
     </section>
 
-    <!-- PANEL 2: RESEARCH_1 — optics patent, right-third spotlight -->
+    <!-- PANEL 2: RESEARCH_1 — optics patent, left half blur + right box -->
     <section class="content-panel research-panel" id="panel-2">
       <div class="rp-header">
         <div class="section-eyebrow">// RESEARCH.PUBLICATIONS</div>
         <h2 class="rp-section-title">RESEARCH &amp;<br><span class="title-accent">PATENTS</span></h2>
       </div>
-      <div class="rp-spotlight rp-spotlight--right-third">
-        <div class="rp-content">
-          <div class="rp-badge">◆ PATENT HOLDER · 3 PAPERS · 2ND AUTHOR</div>
-          <div class="rp-item-title">Optics Research</div>
-          <div class="rp-venue">3 Publications · 2nd Author · Patent Holder</div>
-          <p class="rp-desc">Research in applied optics producing a patent and three peer-reviewed publications. Contributions span optical system design, computational imaging, and novel sensing modalities for high-precision measurement.</p>
-          <div class="research-tags">
-            <span class="tag small tag-accent">PATENT HOLDER</span>
-            <span class="tag small tag-accent">2ND AUTHOR</span>
-            <span class="tag small">OPTICS</span>
-            <span class="tag small">3 PAPERS</span>
-          </div>
+      <div class="rp-blur rp-blur--right-half"></div>
+      <div class="rp-box rp-box--right">
+        <div class="rp-badge">◆ PATENT HOLDER · 2ND AUTHOR · THEORETICAL PHYSICS LAB</div>
+        <div class="rp-item-title">Optics &amp;<br>Pose Estimation</div>
+        <div class="rp-venue">MIT Theoretical Physics Lab · Patent · $2B Market</div>
+        <p class="rp-desc">2nd author on publication, secured patent for a $2B addressable market. Implemented stereo vision system with LiDAR 6D pose estimation and RL policy for navigation.</p>
+        <div class="research-tags">
+          <span class="tag tag-accent">PATENT HOLDER</span>
+          <span class="tag tag-accent">2ND AUTHOR</span>
+          <span class="tag">STEREO VISION</span>
+          <span class="tag">LIDAR · 6D POSE</span>
         </div>
       </div>
     </section>
 
-    <!-- PANEL 3: RESEARCH_2 — tactile robotics, left-half blur with text + right-quarter blur -->
+    <!-- PANEL 3: RESEARCH_2 — tactile robotics, left half blur + right quarter blur + left box -->
     <section class="content-panel research-panel" id="panel-3">
       <div class="rp-header">
         <div class="section-eyebrow">// RESEARCH.PUBLICATIONS</div>
         <h2 class="rp-section-title">RESEARCH &amp;<br><span class="title-accent">PATENTS</span></h2>
       </div>
-      <div class="rp-spotlight rp-spotlight--left-half">
-        <div class="rp-content">
-          <div class="rp-badge">◆ ACTIVE — MIT IMPROBABLE AI LAB</div>
-          <div class="rp-item-title">Tactile Robotics &amp;<br>Diffusion Model Control</div>
-          <div class="rp-venue">Science Journal · 2nd Author · Cambridge, MA</div>
-          <p class="rp-desc">Training dexterous robotic hands using high-resolution tactile sensor arrays and diffusion-based control policies. State-of-the-art performance on contact-rich manipulation benchmarks.</p>
-          <div class="research-tags">
-            <span class="tag small">DIFFUSION MODELS</span>
-            <span class="tag small">TACTILE SENSING</span>
-            <span class="tag small tag-accent">2ND AUTHOR</span>
-            <span class="tag small tag-accent">PUBLISHED</span>
-          </div>
+      <div class="rp-blur rp-blur--left-half"></div>
+      <div class="rp-blur rp-blur--right-quarter"></div>
+      <div class="rp-box rp-box--left">
+        <div class="rp-badge">◆ ACTIVE — MIT IMPROBABLE AI LAB</div>
+        <div class="rp-item-title">Tactile Robotics &amp;<br>Simulation Training</div>
+        <div class="rp-venue">MIT Improbable AI Lab · CSAIL · Cambridge, MA</div>
+        <p class="rp-desc">Isaac lab simulation-based learning to teach robotic hands to understand object shapes through tactile sensors. Expanded research into latent understanding with VAEs and diffusion models.</p>
+        <div class="research-tags">
+          <span class="tag">ISAAC LAB</span>
+          <span class="tag">TACTILE SENSING</span>
+          <span class="tag tag-accent">VAEs</span>
+          <span class="tag tag-accent">DIFFUSION MODELS</span>
         </div>
       </div>
-      <div class="rp-blur-cap rp-blur-cap--right"></div>
     </section>
 
-    <!-- PANEL 4: RESEARCH_3 — Harvard Medical, left-3/4 blur with text -->
+    <!-- PANEL 4: RESEARCH_3 — Harvard Medical, left 3/4 blur + left box -->
     <section class="content-panel research-panel" id="panel-4">
       <div class="rp-header">
         <div class="section-eyebrow">// RESEARCH.PUBLICATIONS</div>
         <h2 class="rp-section-title">RESEARCH &amp;<br><span class="title-accent">PATENTS</span></h2>
       </div>
-      <div class="rp-spotlight rp-spotlight--left-3q">
-        <div class="rp-content">
-          <div class="rp-badge">◆ DEPLOYED · HARVARD MEDICAL SCHOOL</div>
-          <div class="rp-item-title">Infection Detection CV Pipeline</div>
-          <div class="rp-venue">Harvard Medical School · Computer Vision · 2024</div>
-          <p class="rp-desc">Real-time CV system detecting infection markers in clinical microscopy images. Deployed in active clinical trial with state-of-the-art sensitivity on pathogen detection benchmarks.</p>
-          <div class="research-tags">
-            <span class="tag small tag-accent">HARVARD MEDICAL</span>
-            <span class="tag small">COMPUTER VISION</span>
-            <span class="tag small">CLINICAL DEPLOYMENT</span>
-          </div>
+      <div class="rp-blur rp-blur--left-3q"></div>
+      <div class="rp-box rp-box--center">
+        <div class="rp-badge">◆ DEPLOYED · HARVARD MEDICAL SCHOOL · MIT EDGERTON CENTER</div>
+        <div class="rp-item-title">Infection Detection<br>CV Pipeline</div>
+        <div class="rp-venue">MIT Edgerton Center · Harvard Medical School · 2024</div>
+        <p class="rp-desc">Adapted model to run locally using TensorFlow Lite with 85% accuracy. Partnered with Harvard Medical School to deploy to rural villages for accessible infection detection.</p>
+        <div class="research-tags">
+          <span class="tag tag-accent">HARVARD MEDICAL</span>
+          <span class="tag tag-accent">DEPLOYED</span>
+          <span class="tag">TENSORFLOW LITE</span>
+          <span class="tag">85% ACCURACY</span>
         </div>
       </div>
     </section>
 
-    <!-- PANEL 5: PROJECTS -->
-    <section class="content-panel" id="panel-5">
-      <div class="panel-inner">
+    <!-- PANEL 5: PROJECTS_1 — Mirim 3D fashion, left blur + left box -->
+    <section class="content-panel proj-panel" id="panel-5">
+      <div class="proj-header">
         <div class="section-eyebrow">// PROJECTS.INIT</div>
-        <h2 class="section-title">SELECTED<br><span class="title-accent">PROJECTS</span></h2>
-        <div class="project-grid">
-          <div class="project-item featured">
-            <div class="project-number">01</div>
-            <div class="project-content">
-              <div class="project-title">2D → 3D Reconstruction Pipeline</div>
-              <div class="project-award"><span class="tag tag-accent small">YC GRANT RECIPIENT</span></div>
-              <p class="project-desc">Novel pipeline reconstructing photorealistic 3D scenes from 2D image sequences. Awarded Y Combinator Grant for commercial potential in AR/VR and robotics applications.</p>
-              <div class="project-stack">Python · NeRF · PyTorch · AWS</div>
-            </div>
-          </div>
-          <div class="project-item">
-            <div class="project-number">02</div>
-            <div class="project-content">
-              <div class="project-title">Tennis Ball Robot</div>
-              <p class="project-desc">Autonomous robot tracking and intercepting tennis balls in real-time using computer vision and PID motor control.</p>
-              <div class="project-stack">C++ · OpenCV · ROS · PID</div>
-            </div>
-          </div>
-          <div class="project-item">
-            <div class="project-number">03</div>
-            <div class="project-content">
-              <div class="project-title">On-Device ML Pipeline</div>
-              <p class="project-desc">Quantized YOLO deployment on embedded hardware achieving real-time object detection with minimal power.</p>
-              <div class="project-stack">TFLite · YOLO · Python · C++</div>
-            </div>
-          </div>
-          <div class="project-item">
-            <div class="project-number">04</div>
-            <div class="project-content">
-              <div class="project-title">eBay Checkout ML System</div>
-              <p class="project-desc">End-to-end ML recommendation system improving checkout conversion +22%. Patent holder for the architecture.</p>
-              <div class="project-stack">XGBoost · PyTorch · AWS · PostgreSQL</div>
-            </div>
-          </div>
+        <h2 class="proj-section-title">SELECTED<br><span class="title-accent">PROJECTS</span></h2>
+      </div>
+      <div class="proj-blur proj-blur--left"></div>
+      <div class="proj-box proj-box--left">
+        <div class="proj-box-eyebrow">// MIRIM.3D_FASHION</div>
+        <div class="proj-box-title">Mirim</div>
+        <div class="proj-box-role">YC IAP · 3D Fashion App · 2025</div>
+        <ul class="proj-box-bullets">
+          <li>Automatically converts <strong>2D clothing listings → photorealistic 3D models</strong></li>
+          <li>Built and presented at <strong>YC IAP</strong> (Y Combinator Internship Access Program)</li>
+          <li>Neural pipeline for garment reconstruction from single-view images</li>
+        </ul>
+        <div class="proj-box-tags">
+          <span class="tag tag-accent">YC IAP</span>
+          <span class="tag">3D RECONSTRUCTION</span>
+          <span class="tag">FASHION TECH</span>
+          <span class="tag">PYTORCH · NERF</span>
         </div>
       </div>
     </section>
 
-    <!-- PANEL 6: CONTACT -->
-    <section class="content-panel" id="panel-6">
+    <!-- PANEL 6: PROJECTS_2 — Skeye, right blur + right box -->
+    <section class="content-panel proj-panel" id="panel-6">
+      <div class="proj-header">
+        <div class="section-eyebrow">// PROJECTS.INIT</div>
+        <h2 class="proj-section-title">SELECTED<br><span class="title-accent">PROJECTS</span></h2>
+      </div>
+      <div class="proj-blur proj-blur--right"></div>
+      <div class="proj-box proj-box--right">
+        <div class="proj-box-eyebrow">// SKEYE.ROBOTICS_SAFETY</div>
+        <div class="proj-box-title">Skeye</div>
+        <div class="proj-box-role">Guardian Angel for Robotics · Real-Time Safety</div>
+        <ul class="proj-box-bullets">
+          <li>Distilled CV models detect external dangers — <strong>cameras, IMU &amp; LiDAR</strong> fusion</li>
+          <li>YOLO on <strong>Jetson Nano</strong> — battery efficient, plug-and-play robot integration</li>
+          <li>Multimodal perception pipeline to accelerate <strong>robots into production</strong></li>
+        </ul>
+        <div class="proj-box-tags">
+          <span class="tag tag-accent">JETSON NANO</span>
+          <span class="tag">YOLO · CV</span>
+          <span class="tag">IMU · LIDAR</span>
+          <span class="tag tag-accent">ROBOTICS SAFETY</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 7: PROJECTS_3 — Reflex RL pipeline, no blur, top-right box -->
+    <section class="content-panel proj-panel" id="panel-7">
+      <div class="proj-header">
+        <div class="section-eyebrow">// PROJECTS.INIT</div>
+        <h2 class="proj-section-title">SELECTED<br><span class="title-accent">PROJECTS</span></h2>
+      </div>
+      <div class="proj-box proj-box--top-right">
+        <div class="proj-box-eyebrow">// REFLEX.RL_PIPELINE</div>
+        <div class="proj-box-title">Reflex</div>
+        <div class="proj-box-role">Autonomous RL &amp; IL Training Pipeline</div>
+        <ul class="proj-box-bullets">
+          <li>Autonomous <strong>agentic training</strong> loop — self-generates curriculum and environments</li>
+          <li>Trains <strong>RL and IL policies</strong> rapidly with minimal human intervention</li>
+          <li>Pluggable reward design and sim-to-real transfer pipeline</li>
+        </ul>
+        <div class="proj-box-tags">
+          <span class="tag tag-accent">AGENTIC</span>
+          <span class="tag tag-accent">RL · IL</span>
+          <span class="tag">PYTHON</span>
+          <span class="tag">ISAAC LAB</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 8: CONTACT -->
+    <section class="content-panel" id="panel-8">
       <div class="panel-inner">
         <div class="section-eyebrow">// CONTACT.INIT</div>
         <h2 class="section-title">GET IN<br><span class="title-accent">TOUCH</span></h2>
@@ -247,7 +276,7 @@
     <div class="indicator" data-section="1"><div class="indicator-dot"></div><div class="indicator-label">EXP</div></div>
     <div class="indicator" data-section="2"><div class="indicator-dot"></div><div class="indicator-label">RES</div></div>
     <div class="indicator" data-section="5"><div class="indicator-dot"></div><div class="indicator-label">PROJ</div></div>
-    <div class="indicator" data-section="6"><div class="indicator-dot"></div><div class="indicator-label">CONTACT</div></div>
+    <div class="indicator" data-section="8"><div class="indicator-dot"></div><div class="indicator-label">CONTACT</div></div>
   </div>
 
   <!-- STATUS BAR -->

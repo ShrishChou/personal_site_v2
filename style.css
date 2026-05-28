@@ -202,12 +202,15 @@ html,body {
   transition:opacity .5s ease;
 }
 
-/* Intro, experience, and all three research sub-panels — hide vignette, they manage their own overlays */
+/* Intro, experience, research, and project sub-panels — hide vignette, they manage their own overlays */
 #video-wrapper[data-section="0"] #reading-vignette,
 #video-wrapper[data-section="1"] #reading-vignette,
 #video-wrapper[data-section="2"] #reading-vignette,
 #video-wrapper[data-section="3"] #reading-vignette,
-#video-wrapper[data-section="4"] #reading-vignette {
+#video-wrapper[data-section="4"] #reading-vignette,
+#video-wrapper[data-section="5"] #reading-vignette,
+#video-wrapper[data-section="6"] #reading-vignette,
+#video-wrapper[data-section="7"] #reading-vignette {
   opacity:0;
 }
 
@@ -233,7 +236,7 @@ html,body {
   pointer-events:none;
 }
 .exp-heading-text {
-  font-size:clamp(28px,4vw,54px);
+  font-size:clamp(24px,3.1vw,43px);
   font-weight:700;
   color:var(--white);
   line-height:.92;
@@ -243,60 +246,85 @@ html,body {
 
 .exp-box {
   position:absolute;
-  width:clamp(320px,40vw,580px);
+  /* width is overridden per-box so margin:auto centering works */
   background:rgba(5,10,14,.9);
   border:1px solid var(--border);
-  padding:clamp(20px,2.8vh,32px) clamp(22px,2.5vw,36px);
+  padding:clamp(22px,3vh,36px) clamp(24px,2.8vw,40px);
   backdrop-filter:blur(8px);
   -webkit-backdrop-filter:blur(8px);
 }
 
-/* eBay: centered in top-left quadrant */
+/* eBay box — left half, vertical position set by translateY
+   translateY(-100%) = sits exactly above center line
+   translateY(-50%)  = centered on screen
+   increase the number toward 0 to move it DOWN */
 .exp-box-ebay {
   top:50%;
-  transform:translateY(-120%);
-  left:clamp(48px,6vw,110px);
+  transform:translateY(-90%);
+  left:0;
+  right:50%;
+  width:clamp(320px,44vw,640px);
+  margin:0 auto;
 }
 
-/* Multiply Labs: centered in bottom-right quadrant */
+/* Multiply Labs box — right half, vertical position set by translateY
+   translateY(100%) = sits exactly below center line
+   translateY(50%)  = centered on screen
+   decrease the number toward 0 to move it UP */
 .exp-box-multiply {
   bottom:50%;
   transform:translateY(120%);
-  right:clamp(48px,6vw,110px);
+  left:50%;
+  right:0;
+  width:clamp(320px,44vw,640px);
+  margin:0 auto;
 }
 
+/* "// eBay_ML.ENGINEERING" label above company name */
 .exp-box-eyebrow {
-  font-size:9px; letter-spacing:.26em;
+  font-size:12px; letter-spacing:.26em;
   color:var(--muted); margin-bottom:12px;
 }
 
+/* Company name — e.g. "eBay Inc." */
 .exp-box-company {
-  font-size:clamp(20px,2.4vw,32px);
+  font-size:clamp(18px,2.3vw,36px);
   font-weight:700; color:var(--white);
-  letter-spacing:.05em; margin-bottom:5px;
+  letter-spacing:.05em; margin-bottom:6px;
 }
 
+/* Role line — e.g. "Machine Learning Engineer · Intern · Summer 2024" */
 .exp-box-role {
-  font-size:clamp(11px,1.1vw,14px); letter-spacing:.13em;
-  color:var(--cyan); margin-bottom:14px;
+  font-size:clamp(9px,1vw,13px); letter-spacing:.13em;
+  color:var(--cyan); margin-bottom:16px;
 }
 
+/* Bullet points */
 .exp-box-bullets {
-  list-style:none; margin-bottom:14px;
+  list-style:none; margin-bottom:16px;
 }
 .exp-box-bullets li {
-  font-size:clamp(11px,1.1vw,14px);
+  font-size:clamp(11px,1.1vw,13px);
   color:var(--text); line-height:1.65;
-  padding-left:16px; position:relative;
-  margin-bottom:6px;
+  padding-left:18px; position:relative;
+  margin-bottom:7px;
 }
 .exp-box-bullets li::before {
   content:'►'; position:absolute; left:0;
-  color:var(--muted); font-size:7px; top:4px;
+  color:var(--muted); font-size:8px; top:4px;
 }
 .exp-box-bullets li strong { color:var(--white); }
 
-.exp-box-tags { display:flex; gap:5px; flex-wrap:wrap; }
+/* Tag pills at the bottom of each box — e.g. "PATENT HOLDER"
+   NOTE: .exp-box-tags .tag.small selector is needed because .tag.small
+   (defined later in this file) has equal specificity and would otherwise win */
+.exp-box-tags { display:flex; gap:6px; flex-wrap:wrap; }
+.exp-box-tags .tag,
+.exp-box-tags .tag.small {
+  font-size:9px;
+  padding:3px 9px;
+  letter-spacing:.15em;
+}
 
 /* ============================================================
    RESEARCH PANELS (panels 2-4) — spotlight blur layouts
@@ -320,7 +348,7 @@ html,body {
   pointer-events:none;
 }
 .rp-section-title {
-  font-size:clamp(28px,4vw,54px);
+  font-size:clamp(24px,3.1vw,43px);
   font-weight:700;
   color:var(--white);
   line-height:.92;
@@ -328,82 +356,164 @@ html,body {
 }
 .rp-section-title .title-accent { color:var(--cyan); }
 
-/* Base spotlight — shared backdrop + positioning */
-.rp-spotlight {
+/* Research content box — same dark container as exp-box */
+.rp-box {
   position:absolute;
-  top:0; bottom:0;
-  display:flex;
-  align-items:center;
-  backdrop-filter:blur(22px) brightness(0.45);
-  -webkit-backdrop-filter:blur(22px) brightness(0.45);
-  background:rgba(5,10,14,.60);
+  background:rgba(5,10,14,.9);
+  border:1px solid var(--border);
+  padding:clamp(22px,3vh,36px) clamp(24px,2.8vw,40px);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  z-index:2;
+}
+
+/* Panel 2: box centered in right half */
+.rp-box--right {
+  top:50%; transform:translateY(-50%);
+  left:50%; right:0;
+  width:clamp(360px,48vw,700px);
+  margin:0 auto;
+}
+
+/* Panel 3: box centered in left half */
+.rp-box--left {
+  top:50%; transform:translateY(-50%);
+  left:0; right:50%;
+  width:clamp(360px,48vw,700px);
+  margin:0 auto;
+}
+
+/* Panel 4: box centered across full screen width */
+.rp-box--center {
+  top:50%; transform:translateY(-50%);
+  left:0; right:0;
+  width:clamp(360px,48vw,700px);
+  margin:0 auto;
+}
+
+/* Full-height blur strips — visual context behind each research box */
+.rp-blur {
+  position:absolute; top:0; bottom:0;
+  background:rgba(0,0,0,0.9);
   z-index:1;
 }
+.rp-blur--right-half    { right:0; width:50%; }
+/* Panel 2: blur right half (behind the box) */
+.rp-blur--right-half   { right:0; width:50%; }
+/* Panel 2 alt / Panel 3: blur left half */
+.rp-blur--left-half    { left:0; width:50%; }
+/* Panel 3: blur right quarter */
+.rp-blur--right-quarter { right:0; width:25%; }
+/* Panel 4: blur left three-quarters */
+.rp-blur--left-3q      { left:0; width:75%; }
 
-/* Panel 2: right third — text occupies the rightmost 33% */
-.rp-spotlight--right-third {
-  right:0;
-  left:67%;
-  padding:calc(var(--nav-h) + 20px) clamp(20px,2.5vw,40px) calc(var(--bar-h) + 16px);
-}
-
-/* Panel 3: left half — blurred left 50%, clear middle 25%, blurred right 25% (via .rp-blur-cap) */
-.rp-spotlight--left-half {
-  left:0;
-  right:50%;
-  flex-direction:column;
-  align-items:flex-start;
-  justify-content:flex-end;
-  padding:calc(var(--nav-h) + 140px) clamp(20px,3vw,56px) calc(var(--bar-h) + clamp(36px,5vh,64px));
-}
-
-/* Panel 4: left 3/4 — blurred left 75%, clear right 25% */
-.rp-spotlight--left-3q {
-  left:0;
-  right:25%;
-  flex-direction:column;
-  align-items:flex-start;
-  justify-content:flex-end;
-  padding:calc(var(--nav-h) + 140px) clamp(20px,3vw,56px) calc(var(--bar-h) + clamp(36px,5vh,64px));
-}
-
-/* Blur-only end cap — no text (right quarter on panel 3) */
-.rp-blur-cap {
-  position:absolute;
-  top:0; bottom:0;
-  backdrop-filter:blur(22px) brightness(0.45);
-  -webkit-backdrop-filter:blur(22px) brightness(0.45);
-  background:rgba(5,10,14,.60);
-  z-index:1;
-}
-.rp-blur-cap--right { right:0; width:25%; }
-
-/* Content wrapper inside spotlight */
-.rp-content { width:100%; }
-
-/* Research item text — larger for readability */
+/* Research item text — nearly doubled for readability */
 .rp-badge {
-  font-size:9px; letter-spacing:.24em;
-  color:var(--cyan); margin-bottom:12px;
+  font-size:11px; letter-spacing:.22em;
+  color:var(--cyan); margin-bottom:14px;
 }
 .rp-item-title {
-  font-size:clamp(17px,2.2vw,28px);
+  font-size:clamp(18px,2.3vw,34px);
   font-weight:700; color:var(--white);
-  letter-spacing:.03em; margin-bottom:8px;
-  line-height:1.15;
+  letter-spacing:.02em; margin-bottom:12px;
+  line-height:1.1;
 }
 .rp-venue {
-  font-size:clamp(10px,1vw,13px);
-  letter-spacing:.14em; color:var(--cyan-dim);
-  margin-bottom:16px;
+  font-size:clamp(9px,1vw,12px);
+  letter-spacing:.12em; color:var(--cyan-dim);
+  margin-bottom:20px;
 }
 .rp-desc {
-  font-size:clamp(12px,1.15vw,15px);
+  font-size:clamp(11px,1.1vw,13px);
   color:var(--text); line-height:1.75;
-  margin-bottom:18px;
+  margin-bottom:22px;
 }
 /* shared tag row */
 .research-tags { display:flex; gap:5px; flex-wrap:wrap; }
+/* Tag size override — same cascade fix as exp-box-tags */
+.research-tags .tag,
+.research-tags .tag.small {
+  font-size:9px; padding:3px 9px; letter-spacing:.15em;
+}
+
+/* ============================================================
+   PROJECT PANELS (panels 5-7)
+   ============================================================ */
+
+.content-panel.proj-panel {
+  position:absolute; inset:0; width:100%; padding:0; align-items:unset;
+}
+
+/* "SELECTED PROJECTS" heading — upper RIGHT (unlike exp which is upper left) */
+.proj-header {
+  position:absolute;
+  top:calc(var(--nav-h) + clamp(14px,2vh,28px));
+  right:clamp(20px,3vw,56px);
+  z-index:3; pointer-events:none; text-align:right;
+}
+.proj-section-title {
+  font-size:clamp(24px,3.1vw,43px);
+  font-weight:700; color:var(--white); line-height:.92; letter-spacing:.03em;
+}
+.proj-section-title .title-accent { color:var(--cyan); }
+
+/* Frosted blur strip covering one side of the screen */
+.proj-blur {
+  position:absolute; top:0; bottom:0;
+  background:rgba(0, 0, 0, 0.8);
+  z-index:1;
+}
+.proj-blur--left  { left:0; width:50%; }
+.proj-blur--right { right:0; width:50%; }
+
+/* Project content box — identical style to exp-box */
+.proj-box {
+  position:absolute;
+  background:rgba(5,10,14,.9);
+  border:1px solid var(--border);
+  padding:clamp(22px,3vh,36px) clamp(24px,2.8vw,40px);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  z-index:2;
+}
+
+/* Box centered in left half — for panels 5 and 7 */
+.proj-box--left {
+  top:50%; transform:translateY(-50%);
+  left:0; right:50%;
+  width:clamp(320px,44vw,640px); margin:0 auto;
+}
+
+/* Box centered in right half — for panel 6 (Skeye) */
+.proj-box--right {
+  top:50%; transform:translateY(-50%);
+  left:50%; right:0;
+  width:clamp(320px,44vw,640px); margin:0 auto;
+}
+
+/* Box in upper-right corner — for panel 7 (Reflex, no blur) */
+.proj-box--top-right {
+  top:calc(var(--nav-h) + clamp(120px,18vh,200px));
+  right:clamp(80px,10vw,180px);
+  width:clamp(320px,44vw,640px);
+}
+
+/* Project box text — same sizes as exp-box */
+.proj-box-eyebrow { font-size:9px; letter-spacing:.26em; color:var(--muted); margin-bottom:12px; }
+.proj-box-title   { font-size:clamp(18px,2.3vw,34px); font-weight:700; color:var(--white); letter-spacing:.05em; margin-bottom:6px; }
+.proj-box-role    { font-size:clamp(9px,1vw,13px); letter-spacing:.13em; color:var(--cyan); margin-bottom:16px; }
+.proj-box-bullets { list-style:none; margin-bottom:16px; }
+.proj-box-bullets li {
+  font-size:clamp(11px,1.1vw,13px); color:var(--text); line-height:1.65;
+  padding-left:18px; position:relative; margin-bottom:7px;
+}
+.proj-box-bullets li::before { content:'►'; position:absolute; left:0; color:var(--muted); font-size:8px; top:4px; }
+.proj-box-bullets li strong { color:var(--white); }
+.proj-box-tags { display:flex; gap:6px; flex-wrap:wrap; }
+/* Same tag override as exp-box to beat .tag.small cascade */
+.proj-box-tags .tag,
+.proj-box-tags .tag.small {
+  font-size:9px; padding:3px 9px; letter-spacing:.15em;
+}
 
 /* ============================================================
    CONTENT PANELS
@@ -532,29 +642,6 @@ html,body {
   margin-bottom:22px;
 }
 .title-accent { color:var(--cyan); }
-
-/* ============================================================
-   PANEL 1 — EXPERIENCE
-   ============================================================ */
-.experience-item { margin-bottom:18px; }
-.exp-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px; }
-.exp-company { font-size:clamp(11px,1.2vw,15px); font-weight:700; color:var(--white); letter-spacing:.06em; }
-.exp-period { font-size:8px; letter-spacing:.2em; color:var(--muted); }
-.exp-role { font-size:10px; color:var(--cyan); letter-spacing:.16em; margin-bottom:7px; }
-.exp-tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px; }
-.exp-bullets { list-style:none; }
-.exp-bullets li {
-  font-size:clamp(9px,.9vw,11px);
-  color:var(--text); margin-bottom:5px;
-  padding-left:12px; position:relative;
-  line-height:1.65;
-}
-.exp-bullets li::before {
-  content:'►'; position:absolute; left:0;
-  color:var(--muted); font-size:7px; top:3px;
-}
-.exp-bullets strong { color:var(--white); }
-.exp-divider { height:1px; background:var(--border); margin:18px 0; }
 
 /* ============================================================
    PANEL 5 — PROJECTS
