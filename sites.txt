@@ -1,0 +1,9 @@
+
+
+Research: 1. optics - paper 1 "AI-Driven Robotics for Optics": https://arxiv.org/abs/2505.17985, paper 2 "A Framework for Closed-Loop Robotic Assembly, Alignment and Self-Recovery of Precision Optical Systems": https://arxiv.org/abs/2603.21496, Science submission: https://anonymous.4open.science/r/AutomateOptics-7C7C/README.md, demo: https://www.youtube.com/watch?v=VnHJXOeZWzM, github: https://github.com/AutoArm/AUTO-Arm
+          2. tactile research - github: https://github.com/ShrishChou/TactileRL
+          3. infection detection app: app: https://play.google.com/store/apps/details?id=com.mobiletechnologylab.wound_screener, article: https://globalhealthresearchcore.hms.harvard.edu/ntacprize/
+
+Projects: 1. mirim - website: https://www.mirim.shop/
+          2. skeye - website: https://shrishchou.github.io/Skeye/
+          3. reflex - github: https://github.com/ShrishChou/Reflex

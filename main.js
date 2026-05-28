@@ -1,10 +1,24 @@
 (function () {
   'use strict';
 
+  // ─── DEVICE DETECTION ────────────────────────────────────────
+  const isMobilePortrait = window.matchMedia('(orientation: portrait) and (max-width: 800px)').matches;
+
   // ─── PIN CONFIG ───────────────────────────────────────────────
   const VIDEO_FPS = 24;
 
-  const PIN_CONFIG = [
+  const PIN_CONFIG = isMobilePortrait ? [
+    { name: 'INTRO',       frame: 0,   navIdx: 0 },
+    { name: 'EXP_EBAY',   frame: 29,  navIdx: 1 },
+    { name: 'EXP_MULTI',  frame: 33,  navIdx: 1 },
+    { name: 'RESEARCH_1', frame: 58,  navIdx: 2 },
+    { name: 'RESEARCH_2', frame: 65,  navIdx: 2 },
+    { name: 'RESEARCH_3', frame: 73,  navIdx: 2 },
+    { name: 'PROJECTS_1', frame: 94,  navIdx: 3 },
+    { name: 'PROJECTS_2', frame: 119, navIdx: 3 },
+    { name: 'PROJECTS_3', frame: 170, navIdx: 3 },
+    { name: 'CONTACT',    frame: 230, navIdx: 4 },
+  ] : [
     { name: 'INTRO',      frame: 0,   navIdx: 0 },
     { name: 'EXPERIENCE', frame: 32,  navIdx: 1 },
     { name: 'RESEARCH_1', frame: 58,  navIdx: 2 },
@@ -34,7 +48,7 @@
   const loader       = document.getElementById('loader');
   const loaderBar    = document.getElementById('loader-bar');
   const loaderLabel  = document.getElementById('loader-label');
-  const panels       = document.querySelectorAll('.content-panel');
+  const panels       = [...document.querySelectorAll(isMobilePortrait ? '.content-panel:not(.desktop-only)' : '.content-panel:not(.mobile-only)')];
   const navLinks     = document.querySelectorAll('.nav-link');
   const indicators   = document.querySelectorAll('.indicator');
   const progressFill = document.getElementById('nav-progress-fill');
@@ -310,16 +324,27 @@
     }, { passive: false });
 
     let touchStartY = null;
+    let touchStartX = null;
     window.addEventListener('touchstart', (e) => {
       touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
     }, { passive: true });
     window.addEventListener('touchend', (e) => {
       if (touchStartY == null || isTransitioning) return;
       const dy = touchStartY - e.changedTouches[0].clientY;
+      const dx = touchStartX - e.changedTouches[0].clientX;
       touchStartY = null;
-      if (Math.abs(dy) < 40) return;
+      touchStartX = null;
+      let dir;
+      if (isMobilePortrait && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) >= 40) {
+        dir = dx > 0 ? 1 : -1; // swipe left = forward, swipe right = back
+      } else if (Math.abs(dy) >= 40) {
+        dir = dy > 0 ? 1 : -1; // swipe up = forward, swipe down = back
+      } else {
+        return;
+      }
       if (!hasScrolled) { hasScrolled = true; if (scrollHint) scrollHint.classList.add('hidden'); }
-      goToPin(currentPin + (dy > 0 ? 1 : -1), false);
+      goToPin(currentPin + dir, false);
     }, { passive: true });
   }
 
@@ -353,6 +378,14 @@
 
   // ─── INIT ─────────────────────────────────────────────────────
   function init() {
+    if (isMobilePortrait) {
+      const src = video.querySelector('source');
+      if (src) { src.src = 'assets/website_vertical_scrub.mp4'; video.load(); }
+      // Shift nav/indicator targets: extra Multiply panel pushes Research, Projects, Contact up by 1
+      document.querySelectorAll('[data-section="2"]').forEach(el => el.dataset.section = '3');
+      document.querySelectorAll('[data-section="5"]').forEach(el => el.dataset.section = '6');
+      document.querySelectorAll('[data-section="8"]').forEach(el => el.dataset.section = '9');
+    }
     panels.forEach(p => setCardVisual(p, 0));
     video.pause();
     setupScrollDetection();

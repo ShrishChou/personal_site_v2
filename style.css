@@ -830,7 +830,7 @@ a.contact-item:hover { border-color:var(--cyan-dim); background:rgba(0,229,255,.
   filter: drop-shadow(0 0 8px rgba(0,229,255,.6));
   animation: scroll-hint-bounce 1.6s ease-in-out infinite;
 }
-#scroll-hint.hidden { opacity: 0; }
+#scroll-hint.hidden { animation: scroll-hint-fade-out 0.6s ease forwards; }
 @keyframes scroll-hint-bounce {
   0%,100% { transform: translateY(0); }
   50%      { transform: translateY(5px); }
@@ -842,6 +842,10 @@ a.contact-item:hover { border-color:var(--cyan-dim); background:rgba(0,229,255,.
 @keyframes scroll-hint-flash {
   0%,100% { opacity: 1; text-shadow: 0 0 18px rgba(0,229,255,.5); }
   50%      { opacity: .25; text-shadow: none; }
+}
+@keyframes scroll-hint-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 /* ============================================================
@@ -899,4 +903,267 @@ body::after {
 
 @media (min-width:1800px) {
   .content-panel { width:44vw; }
+}
+
+/* Mobile-only panels are invisible on desktop/landscape */
+.content-panel.mobile-only { display: none !important; }
+
+/* Mobile nav icons hidden on desktop */
+.mobile-nav-icons { display: none; }
+/* Mobile contact strip hidden on desktop */
+.mobile-contact-strip { display: none; }
+
+/* ============================================================
+   MOBILE PORTRAIT — phone vertical only
+   Horizontal / square displays are entirely unaffected.
+   ============================================================ */
+@media (orientation: portrait) and (max-width: 800px) {
+
+  /* Video fills the portrait screen */
+  #bg-video { object-fit: cover; }
+
+  /* Remove all blur/vignette overlays */
+  #reading-vignette,
+  .rp-blur,
+  .proj-blur { display: none !important; }
+
+  /* ── NAV ── */
+  .nav-brand-full,
+  .nav-social,
+  .nav-center,
+  .nav-divider,
+  .status-dot,
+  .status-text { display: none; }
+
+  /* Icon-only social strip replaces the text nav on mobile */
+  .mobile-nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+  }
+  .mobile-icon-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  .mobile-icon-btn svg { width: 14px; height: 14px; }
+  .mobile-icon-btn:hover { color: var(--cyan); border-color: var(--cyan-border); background: rgba(0,229,255,.06); }
+
+  /* ── STATUS BAR ── */
+  .status-right { display: none; }
+
+  /* ── SCROLL HINT — bottom centre, left-pointing arrow ── */
+  #scroll-hint {
+    top: auto;
+    right: auto;
+    bottom: calc(var(--bar-h) + 80px);
+    left: 50%;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    white-space: nowrap;
+    /* Override the base animation: include translateX(-50%) so the fill
+       doesn't clobber the centering transform */
+    animation: scroll-hint-fade-in-mobile 0.5s ease forwards,
+               scroll-hint-flash 2s ease-in-out 1.4s infinite;
+  }
+  @keyframes scroll-hint-fade-in-mobile {
+    from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  #scroll-hint svg {
+    width: 20px;
+    height: 20px;
+    transform: rotate(-90deg);
+    animation: scroll-hint-bounce-left 1.6s ease-in-out infinite;
+  }
+  @keyframes scroll-hint-bounce-left {
+    0%,100% { transform: rotate(-90deg) translateY(0); }
+    50%      { transform: rotate(-90deg) translateY(5px); }
+  }
+
+  /* ── SECTION INDICATORS — horizontal row at bottom ── */
+  #section-indicators {
+    top: auto;
+    right: auto;
+    bottom: calc(var(--bar-h) + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 12px;
+  }
+  .indicator-label { display: none; }
+
+  /* Mobile-only panels shown on mobile */
+  .content-panel.mobile-only { display: flex !important; }
+
+  /* ── SECTION HEADING OVERLAYS — hidden, video has its own ── */
+  .rp-header,
+  .proj-header,
+  .exp-section-heading { display: none; }
+
+  /* ── EXPERIENCE PANEL ── */
+  /* Hide Multiply Labs from panel-1 on mobile (it gets its own panel-1b) */
+  #panel-1 .exp-box-multiply { display: none; }
+
+  /* Full-screen single-box layout used by both panel-1 (eBay) and panel-1b (Multiply) */
+  .content-panel.exp-panel {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    overflow: hidden;
+    padding: calc(var(--nav-h) + 8px) 10px calc(var(--bar-h) + 8px);
+    gap: 8px;
+  }
+  .content-panel.exp-panel .exp-box,
+  .content-panel.exp-panel .exp-box-mobile-single {
+    position: relative;
+    top: auto; bottom: auto; left: auto; right: auto;
+    transform: none;
+    width: 100%;
+    margin: 0;
+    padding: 14px 16px;
+  }
+  /* Single-box variant used in panel-1b: top-aligned */
+  .content-panel.exp-panel {
+    justify-content: flex-start;
+  }
+  .exp-box-eyebrow  { font-size: 7px; margin-bottom: 5px; }
+  .exp-box-company  { font-size: 16px; margin-bottom: 3px; }
+  .exp-box-role     { font-size: 8px; margin-bottom: 6px; }
+  /* Show only first bullet as one-line description; hide rest; restore tags */
+  .exp-box-bullets  { display: block; margin-bottom: 8px; }
+  .exp-box-bullets li           { font-size: 9px; line-height: 1.45; padding-left: 14px; margin-bottom: 0; }
+  .exp-box-bullets li:nth-child(n+2) { display: none; }
+  .exp-box-tags     { gap: 4px; }
+  .exp-box-tags .tag,
+  .exp-box-tags .tag.small { font-size: 7px; padding: 2px 6px; }
+
+  /* ── RESEARCH PANELS ── */
+  .content-panel.research-panel {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding: calc(var(--nav-h) + 8px) 10px calc(var(--bar-h) + 8px);
+  }
+  .content-panel.research-panel .rp-box {
+    position: relative;
+    top: auto; left: auto; right: auto;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 12px;
+  }
+  /* Strip badge and tags; show venue + 2-line clamped description */
+  .rp-badge,
+  .research-tags { display: none; }
+  .rp-item-title { font-size: 16px; margin-bottom: 4px; line-height: 1.2; }
+  .rp-venue      { font-size: 8px; margin-bottom: 7px; }
+  .rp-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 9px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  /* Tactile (panel-3) and infection detection (panel-4) get an extra line */
+  #panel-3 .rp-desc,
+  #panel-4 .rp-desc { -webkit-line-clamp: 3; line-clamp: 3; }
+
+  /* ── PROJECT PANELS ── */
+  .content-panel.proj-panel {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding: calc(var(--nav-h) + 8px) 10px calc(var(--bar-h) + 8px);
+  }
+  .content-panel.proj-panel .proj-box {
+    position: relative;
+    top: auto; left: auto; right: auto; bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 12px;
+  }
+  .proj-box-eyebrow { font-size: 7px; margin-bottom: 5px; }
+  .proj-box-title   { font-size: 16px; margin-bottom: 3px; }
+  .proj-box-role    { font-size: 8px; margin-bottom: 6px; }
+  /* Show only first bullet as one-line description; hide rest and tags */
+  .proj-box-bullets { display: block; margin-bottom: 10px; }
+  .proj-box-bullets li           { font-size: 9px; line-height: 1.45; padding-left: 14px; margin-bottom: 0; }
+  .proj-box-bullets li:nth-child(n+2) { display: none; }
+  .proj-box-tags    { display: none; }
+
+  /* ── CONTACT PANEL ── */
+  .content-panel {
+    width: 100%;
+    right: 0;
+    left: 0;
+    padding: 0 12px;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  /* Hide desktop contact content on mobile */
+  .contact-grid,
+  .contact-footer,
+  #panel-8 .section-eyebrow { display: none; }
+  #panel-8 .section-title { font-size: 20px; margin-bottom: 14px; }
+
+  /* Frosted panel-inner backdrop */
+  .panel-inner {
+    max-height: none;
+    padding: 18px 16px;
+    padding-right: 16px;
+    background: rgba(5,10,14,.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+  }
+
+  /* Mobile contact icon strip */
+  .mobile-contact-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .mc-tile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 14px;
+    border: 1px solid var(--border);
+    background: rgba(0,229,255,.04);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color .2s, background .2s;
+  }
+  .mc-tile svg { width: 18px; height: 18px; color: var(--cyan); flex-shrink: 0; }
+  .mc-tile:hover { border-color: var(--cyan-border); background: rgba(0,229,255,.09); }
+  .mc-tile-label { font-size: 7px; letter-spacing: .28em; color: var(--muted); margin-bottom: 2px; }
+  .mc-tile-value { font-size: 11px; color: var(--cyan); letter-spacing: .04em; }
+
+  /* ── PANEL LINKS ── */
+  .panel-links { gap: 4px; margin-top: 10px; padding-top: 8px; }
+  .panel-link  { font-size: 7.5px; padding: 5px 9px 5px 8px; }
+  .panel-link svg { width: 10px; height: 10px; }
+
+  /* ── BOTTOM-PINNED PANELS ── */
+  /* Multiply Labs (panel-1b) and Skeye (panel-6) sit near the bottom */
+  #panel-1b { justify-content: flex-end; padding-bottom: calc(var(--bar-h) + 48px); }
+  #panel-6  { align-items: flex-end; }
 }
