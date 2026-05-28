@@ -20,8 +20,6 @@
   const NUM_PINS = PIN_CONFIG.length;
 
   // ─── STATE ────────────────────────────────────────────────────
-  const IDLE_RATE = 0.001; // keep decoder alive; all rAF writes are forward seeks
-
   let currentPin      = 0;
   let isTransitioning = false;
   let transitionToken = 0;
@@ -72,45 +70,15 @@
   setTimeout(() => { if (!siteShown) showSite(); }, 7000);
 
   // ─── TAB VISIBILITY / BFCACHE ────────────────────────────────
-  // After returning from a hidden tab the video decoder is suspended.
-  // We play briefly, seek to the correct frame, then wait for
-  // requestVideoFrameCallback to confirm the compositor has painted
-  // before unlocking scroll. Without this the decoder stays cold and
-  // currentTime writes produce no visual update.
   function resumeAfterHidden() {
     if (!siteShown) return;
-    const myToken   = ++transitionToken;
+    ++transitionToken;
     isTransitioning = false;
     lastScrollTime  = 0;
-    scrollUnlockAt  = Date.now() + 2000;
-
-    const targetTime = PIN_CONFIG[currentPin].time;
+    scrollUnlockAt  = 0;
     panels.forEach((p, i) => setCardVisual(p, i === currentPin ? 1 : 0));
-
-    function finish() {
-      if (transitionToken !== myToken) return;
-      video.currentTime = targetTime;
-      video.playbackRate = IDLE_RATE;
-      scrollUnlockAt = 0;
-    }
-
-    video.playbackRate = IDLE_RATE;
-    const p = video.play();
-    if (p instanceof Promise) {
-      p.then(() => {
-        if (transitionToken !== myToken) { scrollUnlockAt = 0; return; }
-        video.currentTime = targetTime;
-        if (typeof video.requestVideoFrameCallback === 'function') {
-          video.requestVideoFrameCallback(finish);
-        } else {
-          setTimeout(finish, 150);
-        }
-      }).catch(() => { video.currentTime = targetTime; scrollUnlockAt = 0; });
-    } else {
-      video.currentTime = targetTime;
-      video.playbackRate = IDLE_RATE;
-      scrollUnlockAt = 0;
-    }
+    video.pause();
+    video.currentTime = PIN_CONFIG[currentPin].time;
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -125,9 +93,8 @@
   function showSite() {
     if (siteShown) return;
     siteShown = true;
+    video.pause();
     video.currentTime = PIN_CONFIG[0].time;
-    video.playbackRate = IDLE_RATE;
-    video.play().catch(() => {});
     loader.classList.add('hidden');
     panels.forEach((p, i) => setCardVisual(p, i === 0 ? 1 : 0));
     syncNavAndDots(0);
@@ -174,18 +141,23 @@
   }
 
   // ─── SCRUB VIDEO ──────────────────────────────────────────────
-  // Video plays at IDLE_RATE (0.001×) always, keeping the decoder live.
-  // rAF loop writes currentTime at 0.75× (scroll) or 1.5× (nav click).
-  // Both are massive forward seeks vs the near-zero natural position →
-  // genuine decode ops on both fresh load and tab-return.
+  // All animation is done by seeking a *paused* video via rAF.
+  // Seeking currentTime on a paused video is always a genuine decode+render —
+  // it needs no video.play(), no playbackRate, and no user-gesture priming.
+  // This makes it work identically on first load, after tab-return, and on
+  // every subsequent scroll.
+  //
+  // Scroll: 0.75× · Nav buttons: 1.5×  (both directions)
   function scrubToTime(targetTime, fast, myToken, done) {
     const startVideoTime = video.currentTime;
     const forward        = targetTime > startVideoTime + 0.02;
     const rate           = fast ? 1.5 : 0.75;
 
+    video.pause();
+
     let startTS = null;
     function step(now) {
-      if (transitionToken !== myToken) { video.playbackRate = IDLE_RATE; return; }
+      if (transitionToken !== myToken) return;
       if (startTS === null) startTS = now;
       const elapsed = (now - startTS) / 1000;
       const next = forward
@@ -193,22 +165,10 @@
         : Math.max(startVideoTime - elapsed * rate, targetTime);
       video.currentTime = next;
       const reached = forward ? next >= targetTime - 0.02 : next <= targetTime + 0.02;
-      if (reached) { video.currentTime = targetTime; video.playbackRate = IDLE_RATE; done(); }
+      if (reached) { video.currentTime = targetTime; done(); }
       else requestAnimationFrame(step);
     }
-
-    if (video.paused) {
-      video.playbackRate = IDLE_RATE;
-      const p = video.play();
-      if (p instanceof Promise) {
-        p.then(() => requestAnimationFrame(step)).catch(() => requestAnimationFrame(step));
-      } else {
-        requestAnimationFrame(step);
-      }
-    } else {
-      video.playbackRate = IDLE_RATE;
-      requestAnimationFrame(step);
-    }
+    requestAnimationFrame(step);
   }
 
   // ─── GO TO PIN ────────────────────────────────────────────────
