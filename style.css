@@ -680,6 +680,62 @@ a.contact-item:hover { border-color:var(--cyan-dim); background:rgba(0,229,255,.
 }
 
 /* ============================================================
+   PANEL LINK BUTTONS (research + project boxes)
+   Intentionally different from .tag pills:
+   — taller padding, SVG icon, glow on hover, separator line above
+   ============================================================ */
+.panel-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.panel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font);
+  font-size: 8.5px;
+  letter-spacing: .18em;
+  color: var(--text);
+  text-decoration: none;
+  padding: 8px 14px 8px 11px;
+  border: 1px solid rgba(0,229,255,.22);
+  background: rgba(0,229,255,.04);
+  white-space: nowrap;
+  transition: color .2s, border-color .2s, background .2s, box-shadow .2s;
+}
+.panel-link svg {
+  width: 12px; height: 12px;
+  flex-shrink: 0;
+  color: var(--cyan);
+  transition: color .2s;
+}
+.panel-link:hover {
+  color: var(--white);
+  border-color: var(--cyan);
+  background: rgba(0,229,255,.10);
+  box-shadow: 0 0 14px rgba(0,229,255,.14);
+}
+.panel-link:hover svg { color: var(--white); }
+
+.panel-link--accent {
+  border-color: rgba(255,107,53,.32);
+  background: rgba(255,107,53,.05);
+}
+.panel-link--accent svg { color: var(--orange); }
+.panel-link--accent:hover {
+  color: var(--white);
+  border-color: var(--orange);
+  background: rgba(255,107,53,.12);
+  box-shadow: 0 0 14px rgba(255,107,53,.16);
+}
+.panel-link--accent:hover svg { color: var(--white); }
+
+/* ============================================================
    SECTION INDICATORS
    ============================================================ */
 #section-indicators {
