@@ -456,6 +456,8 @@ html,body {
   color:var(--text); line-height:1.75;
   margin-bottom:22px;
 }
+/* mobile-only bullet lists for research panels (shown only in portrait mobile query) */
+.rp-mobile-bullets { display: none; }
 /* shared tag row */
 .research-tags { display:flex; gap:5px; flex-wrap:wrap; }
 /* Tag size override — same cascade fix as exp-box-tags */
@@ -1078,9 +1080,22 @@ body::after {
     line-height: 1.5;
     margin-bottom: 10px;
   }
-  /* Tactile (panel-3) and infection detection (panel-4) get an extra line */
-  #panel-3 .rp-desc,
-  #panel-4 .rp-desc { -webkit-line-clamp: 3; line-clamp: 3; }
+  /* All research panels: hide clamped prose, show bullet list instead */
+  .content-panel.research-panel .rp-desc { display: none; }
+
+  .content-panel.research-panel .rp-mobile-bullets {
+    display: block;
+    margin: 0 0 10px 0;
+    padding-left: 14px;
+    font-size: 9px;
+    color: var(--text);
+    line-height: 1.6;
+    list-style: disc;
+  }
+  .content-panel.research-panel .rp-mobile-bullets li { margin-bottom: 4px; }
+
+  /* Give research boxes a bit more vertical room */
+  .content-panel.research-panel .rp-box { padding: 14px 14px 16px; }
 
   /* ── PROJECT PANELS ── */
   .content-panel.proj-panel {

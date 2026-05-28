@@ -17,7 +17,7 @@
     { name: 'PROJECTS_1', frame: 94,  navIdx: 3 },
     { name: 'PROJECTS_2', frame: 119, navIdx: 3 },
     { name: 'PROJECTS_3', frame: 170, navIdx: 3 },
-    { name: 'CONTACT',    frame: 230, navIdx: 4 },
+    { name: 'CONTACT',    frame: 224, navIdx: 4 },
   ] : [
     { name: 'INTRO',      frame: 0,   navIdx: 0 },
     { name: 'EXPERIENCE', frame: 32,  navIdx: 1 },
@@ -27,7 +27,7 @@
     { name: 'PROJECTS_1', frame: 92,  navIdx: 3 },
     { name: 'PROJECTS_2', frame: 107, navIdx: 3 },
     { name: 'PROJECTS_3', frame: 170, navIdx: 3 },
-    { name: 'CONTACT',    frame: 230, navIdx: 4 },
+    { name: 'CONTACT',    frame: 224, navIdx: 4 },
   ];
 
   PIN_CONFIG.forEach(pin => { pin.time = pin.frame / VIDEO_FPS; });
