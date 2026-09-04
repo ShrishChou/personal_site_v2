@@ -84,6 +84,12 @@
     x0 = null;
   }, { passive: true });
 
+  // The markup ships slide 1's caption and count as static text so the page
+  // reads correctly without JS. Re-sync them from data-caption on load, so
+  // data-caption stays the single source of truth and editing it is enough.
+  capEl.textContent = slides[0].dataset.caption || capEl.textContent;
+  iEl.textContent = '1';
+
   hydrate(slides[1]); // warm the next slide up front
 
   /* ---------------- work clips: play only while on screen ---------------- */

@@ -241,6 +241,7 @@ h1{
 .row-main{display:block;max-width:760px;}
 .row-title{display:block;font-size:14px;font-weight:600;letter-spacing:-0.01em;margin-bottom:2px;}
 .row-desc{display:block;font-size:12.5px;color:var(--ink-2);line-height:1.45;}
+.row-desc + .row-desc{margin-top:5px;}   /* stacked points read as separate lines */
 .row-meta{
   font-family:'JetBrains Mono',ui-monospace,monospace;
   font-size:10.5px;color:var(--ink-3);white-space:nowrap;padding-top:2px;
