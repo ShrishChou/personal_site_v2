@@ -1,0 +1,6 @@
+# Camera originals — RAW and full-resolution edits.
+# docs/media/ is generated from these; the site never loads them.
+videos/
+
+# macOS
+.DS_Store

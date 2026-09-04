@@ -1,0 +1,15 @@
+ ffmpeg -i phone_vid.mp4 \
+  -c:v libx264 -preset fast -crf 18 \
+  -g 6 -keyint_min 6 -sc_threshold 0 \
+  -pix_fmt yuv420p \
+  -movflags +faststart \
+  phone_vid_scrubbed.mp4
+
+
+ffmpeg -i product_hero_animation.mp4 \
+  -c:v libx264 -preset fast -crf 18 \
+  -g 6 -keyint_min 6 -sc_threshold 0 \
+  -pix_fmt yuv420p \
+  -movflags +faststart \
+  product_hero_animation_scrub.mp4
+

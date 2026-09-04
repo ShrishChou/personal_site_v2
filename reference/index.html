@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skeye</title>
+  <!-- Favicons -->
+<link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+<link rel="manifest" href="./favicon/site.webmanifest">
+<link rel="shortcut icon" href="./favicon/favicon.ico">
+<meta name="theme-color" content="#000000">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root{
+      --nav-padding: clamp(20px, 4vw, 50px);
+      --text-padding: clamp(22px, 3.2vw, 34px);
+      --nav-button-size: clamp(12px, 2vw, 14px);
+
+      --headline: clamp(40px, 5.2vw, 72px);
+      --subtitle: clamp(16px, 1.8vw, 20px);
+      --body: clamp(13px, 1.25vw, 16px);
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .video-stage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: 1;
+      background: #000;
+      overflow: hidden;
+    }
+
+    /* Default (desktop): full-bleed cover */
+    #product-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      will-change: transform;
+    }
+
+    /* Mobile: use transform-based framing (x/y/scale), still cover by default */
+    @media (max-width: 768px) {
+      #product-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(var(--m-x, 0vw), var(--m-y, 0vh)) scale(var(--m-scale, 1));
+        transform-origin: center center;
+        will-change: transform;
+      }
+    }
+
+    .top-nav{
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      z-index: 100;
+      padding: var(--nav-padding);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+      pointer-events: none;
+      gap: clamp(15px, 3vw, 30px);
+    }
+    .top-nav > *{ pointer-events: auto; }
+
+    .logo{
+      font-size: clamp(18px, 4vw, 24px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .nav-links{
+      display: flex;
+      gap: clamp(10px, 2vw, 20px);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link{
+      padding: clamp(8px, 1.5vh, 10px) clamp(16px, 3vw, 20px);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: var(--nav-button-size);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .nav-link:hover{
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .nav-link.active{
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    /* Mobile nav "carousel" */
+.nav-links.mobile-window{
+  position: relative;
+}
+
+.nav-links.mobile-window .nav-slot{
+  padding: clamp(8px, 1.5vh, 10px) clamp(16px, 3vw, 20px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: var(--nav-button-size);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  backdrop-filter: blur(10px);
+  font-weight: 500;
+  white-space: nowrap;
+
+  /* slide animation */
+  will-change: transform, opacity;
+}
+
+.nav-links.mobile-window .nav-slot.active{
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.nav-links.mobile-window .nav-slot.slide-left{
+  animation: slotSlideLeft 220ms ease both;
+}
+.nav-links.mobile-window .nav-slot.slide-right{
+  animation: slotSlideRight 220ms ease both;
+}
+
+@keyframes slotSlideLeft{
+  from { transform: translateX(18px); opacity: 0.0; }
+  to   { transform: translateX(0px);  opacity: 1.0; }
+}
+@keyframes slotSlideRight{
+  from { transform: translateX(-18px); opacity: 0.0; }
+  to   { transform: translateX(0px);   opacity: 1.0; }
+}
+
+
+    .progress-container{
+      position: fixed;
+      bottom: clamp(30px, 6vh, 50px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      gap: clamp(8px, 1.5vw, 10px);
+      align-items: center;
+      padding: clamp(10px, 1.5vh, 12px) clamp(16px, 3vw, 20px);
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .progress-dot{
+      width: clamp(6px, 1vw, 8px);
+      height: clamp(6px, 1vw, 8px);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    .progress-dot.active{
+      width: clamp(24px, 4vw, 28px);
+      border-radius: 4px;
+      background: #fff;
+    }
+    /* Mobile-only swipe hint on the right side */
+.mobile-swipe-hint{
+  display: none;
+}
+
+@media (max-width: 768px){
+  .mobile-swipe-hint{
+    position: fixed;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 120;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    opacity: 0.65;
+    pointer-events: none;
+    animation: fadeInOut 3s ease-in-out infinite;
+  }
+
+  .mobile-swipe-hint.hidden{ display: none; }
+
+  .swipe-pill{
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .swipe-arrows{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    opacity: 0.85;
+    font-size: 16px;
+    line-height: 1;
+  }
+}
+
+    .scroll-instruction{
+      position: fixed;
+      bottom: clamp(100px, 15vh, 120px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      font-size: clamp(12px, 2vw, 14px);
+      opacity: 0.5;
+      animation: fadeInOut 3s ease-in-out infinite;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(8px, 1.5vh, 10px);
+    }
+    .scroll-instruction.hidden{ display: none; }
+    @keyframes fadeInOut{ 0%, 100%{ opacity: 0.3; } 50%{ opacity: 0.7; } }
+    .scroll-icon{
+      width: clamp(20px, 3vw, 24px);
+      height: clamp(32px, 5vw, 36px);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 12px;
+      position: relative;
+    }
+    .scroll-icon::before{
+      content: '';
+      width: clamp(3px, 0.5vw, 4px);
+      height: clamp(6px, 1vw, 8px);
+      background: rgba(255, 255, 255, 0.5);
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+      animation: scrollIndicator 2s ease-in-out infinite;
+    }
+    @keyframes scrollIndicator{ 0%{ top: 6px; opacity: 1; } 100%{ top: 20px; opacity: 0; } }
+
+    .loading{
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      transition: opacity 0.35s ease;
+    }
+    .loading.hidden{
+      opacity: 0;
+      pointer-events: none;
+    }
+    .spinner{
+      width: 46px;
+      height: 46px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin{ to { transform: rotate(360deg); } }
+    .loading-text{ opacity: 0.7; font-size: 14px; }
+
+    /* Desktop overlay layer */
+    .overlay-layer{
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      pointer-events: none;
+      display: none;
+    }
+    @media (min-width: 769px){ .overlay-layer{ display: block; } }
+
+    .overlay-half{
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      display: flex;
+      align-items: center;
+      padding: clamp(32px, 4vw, 70px);
+      pointer-events: none;
+    }
+    .overlay-half.left { left: 0; justify-content: flex-start; }
+    .overlay-half.right { right: 0; justify-content: flex-end; }
+
+    .overlay-corner{
+      position: absolute;
+      pointer-events: none;
+      padding: clamp(24px, 3vw, 50px);
+    }
+    .overlay-corner.bottom-right{
+      right: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+    }
+
+    .overlay-card{
+      pointer-events: auto;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 22px;
+      padding: var(--text-padding);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+      width: var(--card-width, min(520px, 42vw));
+      opacity: 0;
+      transform: translateY(18px);
+      will-change: opacity, transform;
+    }
+
+    .overlay-eyebrow{
+      font-size: clamp(12px, 1.1vw, 13px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.65;
+      margin-bottom: 10px;
+    }
+    .overlay-title{
+      font-size: var(--headline);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      font-weight: 750;
+      margin: 0 0 12px 0;
+    }
+    .overlay-subtitle{
+      font-size: var(--subtitle);
+      line-height: 1.3;
+      font-weight: 600;
+      opacity: 0.9;
+      margin: 0 0 12px 0;
+    }
+    .overlay-body{
+      font-size: var(--body);
+      line-height: 1.55;
+      opacity: 0.78;
+      margin: 0;
+      max-width: 60ch;
+    }
+
+    /* Mobile overlays only */
+    #mobile-overlays { display: none; }
+    @media (max-width: 768px){ #mobile-overlays { display: block; } }
+
+    .content-overlay{
+      position: fixed;
+      z-index: 56;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+      left: var(--mtext-x, 5vw);
+    top: var(--mtext-y, auto);
+    right: auto;
+    bottom: auto;
+
+    }
+    .content-overlay.visible{
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Mobile position variants */
+    .content-overlay[data-mpos="bottom"]{ bottom: clamp(90px, 12vh, 140px); }
+    .content-overlay[data-mpos="lower"]{ bottom: clamp(140px, 22vh, 190px); }
+    .content-overlay[data-mpos="top"]{ top: clamp(110px, 14vh, 150px); }
+    .content-overlay[data-mpos="higher"]{ top: clamp(80px, 10vh, 120px); }
+    .content-overlay[data-mpos="top-right"]{ top: clamp(90px, 10vh, 120px); }
+    /* NEW: when using "free" mode, ignore preset variants */
+    .content-overlay[data-mpos="free"]{
+  top: var(--mtext-y, 12vh);
+  left: var(--mtext-x, 5vw);
+  right: auto;
+  bottom: auto;
+}
+
+    .text-box{
+      pointer-events: auto;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(28px);
+      padding: 18px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+      width: var(--mobile-card-width, 92%);
+      max-width: 92vw;
+    }
+    .text-box h1{
+      font-size: clamp(26px, 7vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 10px 0;
+      font-weight: 750;
+    }
+    .text-box h2{
+      font-size: clamp(14px, 4vw, 18px);
+      margin: 0 0 10px 0;
+      opacity: 0.9;
+      font-weight: 650;
+    }
+    .text-box p{
+      font-size: clamp(13px, 3.6vw, 15px);
+      line-height: 1.55;
+      opacity: 0.78;
+      margin: 0;
+    }
+
+    @media (max-width: 768px){
+        .top-nav{ flex-direction: column; align-items: flex-start; }
+        .nav-links{
+            width: 100%;
+            justify-content: center;   /* ✅ centered */
+            display: flex;
+            flex-wrap: nowrap;
+            overflow: hidden;
+            gap: 10px;
+            pointer-events: auto;
+        }
+    }
+
+
+    /* Contact popup */
+/* Contact popup (slide in/out) */
+.contact-pop{
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  display: flex;
+  align-items: flex-end;        /* slide up from bottom */
+  justify-content: center;
+  padding: 20px;
+
+  background: rgba(0,0,0,0.0);
+  backdrop-filter: blur(0px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease, background 260ms ease, backdrop-filter 260ms ease;
+}
+
+.contact-pop.visible{
+  opacity: 1;
+  pointer-events: auto;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+}
+
+/* The card itself slides */
+.contact-card{
+  width: min(520px, 92vw);
+  background: rgba(0,0,0,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+
+  transform: translateY(24px);  /* start slightly below */
+  opacity: 0;
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 320ms ease;
+  will-change: transform, opacity;
+}
+
+/* When visible, slide into place */
+.contact-pop.visible .contact-card{
+  transform: translateY(0px);
+  opacity: 1;
+}
+
+
+.contact-title{
+  font-size: 22px;
+  font-weight: 750;
+  margin-bottom: 10px;
+}
+
+.contact-form{
+  display: grid;
+  gap: 10px;
+}
+
+.contact-form input,
+.contact-form textarea{
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: white;
+  padding: 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+.contact-form button{
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(255,255,255,0.9);
+  color: black;
+}
+
+.contact-hint{
+  margin-top: 10px;
+  opacity: 0.65;
+  font-size: 12px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loading-text">Loading experience...</div>
+  </div>
+
+  <div class="video-stage">
+    <video id="product-video" preload="auto" muted playsinline poster="poster.jpg">
+      <!-- We'll set src dynamically in JS depending on mobile/desktop -->
+    </video>
+  </div>
+
+  <div class="top-nav">
+    <div class="logo">Skeye</div>
+    <div class="nav-links" id="nav-links"></div>
+  </div>
+
+  <div class="progress-container" id="progress-container"></div>
+
+  <div class="scroll-instruction" id="scroll-instruction">
+    <div class="scroll-icon"></div>
+    <div>Scroll to explore</div>
+  </div>
+  <div class="mobile-swipe-hint" id="mobile-swipe-hint">
+    <div class="swipe-arrows">‹</div>
+    <div class="swipe-pill">Swipe</div>
+  </div>
+  
+
+  <div class="overlay-layer" id="desktop-overlays"></div>
+  <div id="mobile-overlays"></div>
+  <div class="contact-pop" id="contact-pop" aria-hidden="true">
+    <div class="contact-card">
+      <div class="contact-title">Contact us</div>
+      <form action="https://formspree.io/f/xkoonvzb" method="POST" class="contact-form">
+        <input name="name" type="text" placeholder="Name" required />
+        <input name="email" type="email" placeholder="Email" required />
+        <textarea name="message" rows="4" placeholder="Message" required></textarea>
+        <button type="submit">Send</button>
+      </form>
+      <div class="contact-hint">Scroll up to close</div>
+    </div>
+  </div>
+  
+  <script>
+    const VIDEO_FPS = 24;
+    const DESKTOP_SCROLL_DURATION = 2600;
+    const DESKTOP_BUTTON_DURATION = 600;
+    const DESKTOP_OVERLAY_FADE_START = 0.15;
+
+    // NEW: per-device video sources
+    const DESKTOP_VIDEO_SRC = "product_hero_animation_scrub.mp4";
+    const MOBILE_VIDEO_SRC  = "phone_vid_scrubbed.mp4";
+
+    const PIN_CONFIG = [
+      {
+        name: "About",
+        frame: 0,
+        desktopOverlay: {
+          mode: "single",
+          side: "right",
+          width: "min(560px, 42vw)",
+          eyebrow: "SKEyE",
+          title: "Skeye",
+          subtitle: "Guardian angel for robots",
+          body: "Integrating low latency models with hardware to make domain specific safety nets for robot safety."
+        },
+        mobileText: {
+          width: "92%",
+          title: "Skeye",
+          position: "free",      // <-- IMPORTANT
+            xVW: 0,                // <-- NEW
+            yVH: 56, 
+          subtitle: "Guardian angel for robots",
+          body: "Low latency models with hardware for domain specific safety nets."
+        },
+
+        // NEW: mobile framing controls (independent from old -50% centering)
+        // xVW / yVH are translations relative to the screen (vw/vh), scale is zoom.
+        mobileVideo: { xVW: 0, yVH: 0, scale: 1.0 }
+      },
+      {
+        name: "Design",
+        frame: 30,
+        desktopOverlay: {
+          mode: "dual",
+          leftWidth: "min(460px, 30vw)",
+          rightWidth: "min(460px, 36vw)",
+          left: { eyebrow: "Vision", title: "Multi-camera", subtitle: "Smart 360 degree processing to predict direction of hazards", body: "" },
+          right:{ eyebrow: "Runtime", title: "Ultra fast processing", subtitle: "Parallel processing on pruned models for quick recognition", body: "" }
+        },
+        mobileText: {
+          width: "92%",
+          title: "Multi-camera",
+          position: "free",      // <-- IMPORTANT
+            xVW: 0,                // <-- NEW
+            yVH: 64, 
+          subtitle: "Ultra fast processing",
+          body: "360° vision + proactive safety."
+        },
+        mobileVideo: { xVW: 0, yVH: 0, scale: 1.0 }
+      },
+      {
+        name: "Speed",
+        frame: 66,
+        desktopOverlay: {
+          mode: "single",
+          side: "right",
+          width: "min(520px, 40vw)",
+          eyebrow: "Platform",
+          title: "Plug and Play",
+          subtitle: "Simple integration with existing hardware",
+          body: ""
+        },
+        mobileText: {
+          width: "92%",
+          position: "free",      // <-- IMPORTANT
+            xVW: 0,                // <-- NEW
+            yVH: 27, 
+          title: "Plug and Play",
+          subtitle: "Simple integration with existing hardware",
+          body: ""
+        },
+        mobileVideo: { xVW: 0, yVH: 0, scale: 1.0 }
+      },
+      {
+        name: "Domain",
+        frame: 120,
+        desktopOverlay: {
+          mode: "single",
+          side: "bottom-right",
+          width: "min(520px, 40vw)",
+          eyebrow: "Domains",
+          title: "Solutions for all industries",
+          subtitle: "Industry-specific models with universal hardware",
+          body: ""
+        },
+        mobileText: {
+            position: "free",      // <-- IMPORTANT
+            xVW: 0,                // <-- NEW
+            yVH: 18, 
+          width: "92%",
+          title: "Solutions for all industries",
+          subtitle: "Industry-specific models with universal hardware",
+          body: ""
+        },
+        mobileVideo: { xVW: 0, yVH: 0, scale: 1.0 }
+      }
+    ];
+
+    const video = document.getElementById("product-video");
+    const loading = document.getElementById("loading");
+    const scrollInstruction = document.getElementById("scroll-instruction");
+    const navLinksContainer = document.getElementById("nav-links");
+    const progressContainer = document.getElementById("progress-container");
+    const desktopOverlaysContainer = document.getElementById("desktop-overlays");
+    const mobileOverlaysContainer = document.getElementById("mobile-overlays");
+    const contactPop = document.getElementById("contact-pop");
+    const mobileSwipeHint = document.getElementById("mobile-swipe-hint");
+
+    let contactOpen = false;
+
+    function openContact() {
+        if (contactOpen) return;
+        contactOpen = true;
+
+        contactPop.classList.add("visible");
+        contactPop.setAttribute("aria-hidden", "false");
+
+        hideAllMobileOverlays();
+    }
+
+    function closeContact() {
+        if (!contactOpen) return;
+        contactOpen = false;
+
+        contactPop.classList.remove("visible");
+        contactPop.setAttribute("aria-hidden", "true");
+
+        // wait for slide-out to finish before restoring overlay (feels cleaner)
+        setTimeout(() => {
+            if (!contactOpen) showMobileOverlay(currentPinIndex);
+        }, 340); // should match .contact-card transition (~320ms)
+    }
+
+
+    let isMobile = window.innerWidth <= 768;
+    let currentPinIndex = 0;
+    let isTransitioning = false;
+    let hasScrolled = false;
+    let transitionToken = 0;
+
+    const desktopCardsByPin = new Map();
+
+    // Precompute times
+    PIN_CONFIG.forEach((pin, idx) => {
+      pin.time = pin.frame / VIDEO_FPS;
+      pin.index = idx;
+    });
+
+    // Pick the correct video per device (desktop keeps your scrub logic)
+    setVideoSourceForDevice();
+
+    window.addEventListener("resize", () => {
+      const wasMobile = isMobile;
+      isMobile = window.innerWidth <= 768;
+      if (wasMobile !== isMobile) location.reload();
+    });
+
+    video.addEventListener("loadedmetadata", () => {
+      // Desktop: lock to first frame and pause (scrub/seek model)
+      // Mobile: start at first pin time but stay paused until first interaction as well
+      video.pause();
+      video.currentTime = PIN_CONFIG[0].time;
+
+      // Apply initial mobile framing controls (if mobile)
+      applyMobileVideoTransform(PIN_CONFIG[0]);
+    });
+
+    video.addEventListener("canplay", () => {
+      loading.classList.add("hidden");
+      if (!document.__inited) {
+        initializeApp();
+        document.__inited = true;
+      }
+    });
+
+    video.addEventListener("error", (e) => {
+      console.error("Video loading error:", e);
+    });
+
+    let lastMobileIndex = 0;
+
+    function getMobileWindowIndices(activeIndex) {
+        const n = PIN_CONFIG.length;
+        const start = Math.max(0, Math.min(activeIndex - 1, n - 3));
+        return [start, start + 1, start + 2];
+    }
+
+    function updateMobileNavWindow(activeIndex, reason = "move") {
+        if (!isMobile) return;
+
+        const dir =
+            reason === "init" ? 0 :
+            activeIndex > lastMobileIndex ? 1 :
+            activeIndex < lastMobileIndex ? -1 : 0;
+
+        const slots = navLinksContainer.querySelectorAll(".nav-slot");
+        const idxs = getMobileWindowIndices(activeIndex);
+
+        slots.forEach((slotEl, slotPos) => {
+            const pinIndex = idxs[slotPos];
+            const label = PIN_CONFIG[pinIndex]?.name ?? "";
+
+            // update label + click target
+            slotEl.textContent = label;
+            slotEl.onclick = () => {
+            if (contactOpen) closeContact();
+            if (!isTransitioning) goToPin(pinIndex, true, true);
+            };
+
+            // active highlight
+            slotEl.classList.toggle("active", pinIndex === activeIndex);
+
+            // slide animation (retrigger each update)
+            slotEl.classList.remove("slide-left", "slide-right");
+            if (dir === 1) slotEl.classList.add("slide-left");     // moving forward => slide left
+            if (dir === -1) slotEl.classList.add("slide-right");   // moving back => slide right
+        });
+
+        lastMobileIndex = activeIndex;
+    }
+
+
+
+    function setVideoSourceForDevice() {
+      // clear existing sources
+      while (video.firstChild) video.removeChild(video.firstChild);
+
+      const src = isMobile ? MOBILE_VIDEO_SRC : DESKTOP_VIDEO_SRC;
+      const source = document.createElement("source");
+      source.src = src;
+      source.type = "video/mp4";
+      video.appendChild(source);
+
+      // ensure correct mobile/desktop CSS transform baseline
+      if (!isMobile) {
+        // desktop should not carry mobile transform vars
+        video.style.removeProperty("--m-x");
+        video.style.removeProperty("--m-y");
+        video.style.removeProperty("--m-scale");
+        video.style.transform = "";
+      } else {
+        // set defaults
+        video.style.setProperty("--m-x", "0vw");
+        video.style.setProperty("--m-y", "0vh");
+        video.style.setProperty("--m-scale", "1");
+      }
+
+      video.load();
+    }
+
+    function initializeApp() {
+      generateNavigation();
+      generateProgressDots();
+      generateDesktopOverlays();
+      generateMobileOverlays();
+
+      // initial overlays
+      renderDesktopOverlayState(0, 1);
+      showMobileOverlay(0);
+        // Hint visibility by device
+if (isMobile) {
+  scrollInstruction.classList.add("hidden");      // don't show "Scroll to explore" on mobile
+  mobileSwipeHint.classList.remove("hidden");     // show swipe hint
+} else {
+  mobileSwipeHint.classList.add("hidden");        // don't show swipe hint on desktop
+}
+
+      setupScrollDetection();
+      setupKeyboardNavigation();
+    }
+
+    function generateNavigation() {
+        navLinksContainer.innerHTML = "";
+
+        // Desktop: keep all buttons (your existing behavior)
+        if (!isMobile) {
+            PIN_CONFIG.forEach((pin, index) => {
+            const button = document.createElement("button");
+            button.className = "nav-link";
+            button.textContent = pin.name;
+            if (index === 0) button.classList.add("active");
+            button.addEventListener("click", () => {
+                if (contactOpen) closeContact();
+                if (!isTransitioning) goToPin(index, true, true);
+            });
+            navLinksContainer.appendChild(button);
+            });
+            return;
+        }
+
+        // Mobile: 3-slot "window"
+        navLinksContainer.classList.add("mobile-window");
+
+        for (let slot = 0; slot < 3; slot++) {
+            const btn = document.createElement("button");
+            btn.className = "nav-slot";
+            btn.dataset.slot = String(slot);
+            navLinksContainer.appendChild(btn);
+        }
+
+        // initial paint
+        updateMobileNavWindow(currentPinIndex, "init");
+    }
+
+
+    function generateProgressDots() {
+      progressContainer.innerHTML = "";
+      PIN_CONFIG.forEach((pin, index) => {
+        const dot = document.createElement("div");
+        dot.className = "progress-dot";
+        if (index === 0) dot.classList.add("active");
+        dot.addEventListener("click", () => {
+            if (contactOpen) closeContact();
+            if (!isTransitioning) goToPin(index, true, true);
+        });
+
+        progressContainer.appendChild(dot);
+      });
+    }
+
+    function generateMobileOverlays() {
+      mobileOverlaysContainer.innerHTML = "";
+      PIN_CONFIG.forEach((pin, index) => {
+        if (!pin.mobileText) return;
+
+        const overlay = document.createElement("div");
+        overlay.className = "content-overlay";
+        overlay.dataset.index = String(index);
+        overlay.dataset.mpos = pin.mobileText.position || "bottom";
+        // NEW: per-pin free positioning (vw/vh)
+        if ((pin.mobileText.position || "") === "free") {
+        const x = Number(pin.mobileText.xVW ?? 5);
+        const y = Number(pin.mobileText.yVH ?? 12);
+        overlay.style.setProperty("--mtext-x", `${x}vw`);
+        overlay.style.setProperty("--mtext-y", `${y}vh`);
+        }
+
+
+        // NEW: allow per-pin mobile overlay placement & scale like desktop "framework"
+        // You can tune these without touching CSS.
+        // Defaults:
+        const mt = pin.mobileText || {};
+        
+        overlay.style.left   = mt.left   || "5vw";
+        overlay.style.right  = mt.right  || "5vw";
+        overlay.style.top    = mt.top    || "";
+        overlay.style.bottom = mt.bottom || "";
+
+        if (mt.maxWidth) overlay.style.maxWidth = mt.maxWidth;
+
+        const box = document.createElement("div");
+        box.className = "text-box";
+        box.style.setProperty("--mobile-card-width", mt.width || "92%");
+        if (mt.align === "right") box.style.marginLeft = "auto";
+        if (mt.align === "center") box.style.marginLeft = "auto", box.style.marginRight = "auto";
+
+        if (mt.title) {
+          const h1 = document.createElement("h1");
+          h1.textContent = mt.title;
+          box.appendChild(h1);
+        }
+        if (mt.subtitle) {
+          const h2 = document.createElement("h2");
+          h2.textContent = mt.subtitle;
+          box.appendChild(h2);
+        }
+        if (mt.body) {
+          const p = document.createElement("p");
+          p.textContent = mt.body;
+          box.appendChild(p);
+        }
+
+        overlay.appendChild(box);
+        mobileOverlaysContainer.appendChild(overlay);
+      });
+    }
+
+    function generateDesktopOverlays() {
+      desktopOverlaysContainer.innerHTML = "";
+      desktopCardsByPin.clear();
+
+      PIN_CONFIG.forEach((pin, index) => {
+        const cfg = pin.desktopOverlay;
+        if (!cfg) return;
+
+        const marker = document.createElement("div");
+        marker.dataset.index = String(index);
+
+        const cards = [];
+
+        if (cfg.mode === "single") {
+          const card = makeCard(cfg, cfg.width);
+          cards.push(card);
+
+          if (cfg.side === "bottom-right") {
+            const corner = document.createElement("div");
+            corner.className = "overlay-corner bottom-right";
+            corner.appendChild(card);
+            marker.appendChild(corner);
+          } else {
+            marker.appendChild(makeHalf(cfg.side, card));
+          }
+        } else if (cfg.mode === "dual") {
+          const leftCard = makeCard(cfg.left, cfg.leftWidth);
+          const rightCard = makeCard(cfg.right, cfg.rightWidth);
+          cards.push(leftCard, rightCard);
+
+          marker.appendChild(makeHalf("left", leftCard));
+          marker.appendChild(makeHalf("right", rightCard));
+        }
+
+        desktopCardsByPin.set(index, cards);
+        desktopOverlaysContainer.appendChild(marker);
+      });
+
+      function makeHalf(side, cardEl) {
+        const half = document.createElement("div");
+        half.className = `overlay-half ${side}`;
+        half.appendChild(cardEl);
+        return half;
+      }
+
+      function makeCard(data, width) {
+        const card = document.createElement("div");
+        card.className = "overlay-card";
+        card.style.setProperty("--card-width", width || "min(520px, 42vw)");
+
+        if (data.eyebrow) {
+          const e = document.createElement("div");
+          e.className = "overlay-eyebrow";
+          e.textContent = data.eyebrow;
+          card.appendChild(e);
+        }
+        if (data.title) {
+          const t = document.createElement("div");
+          t.className = "overlay-title";
+          t.textContent = data.title;
+          card.appendChild(t);
+        }
+        if (data.subtitle) {
+          const s = document.createElement("div");
+          s.className = "overlay-subtitle";
+          s.textContent = data.subtitle;
+          card.appendChild(s);
+        }
+        if (data.body) {
+          const b = document.createElement("p");
+          b.className = "overlay-body";
+          b.textContent = data.body;
+          card.appendChild(b);
+        }
+
+        setDesktopCardVisual(card, 0);
+        return card;
+      }
+    }
+
+    function setupScrollDetection() {
+      let lastScrollTime = 0;
+      const scrollDebounce = isMobile ? 140 : 140;
+
+      // wheel for desktop / trackpads
+      window.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastScrollTime < scrollDebounce || isTransitioning) return;
+        lastScrollTime = now;
+
+        if (!hasScrolled) {
+            hasScrolled = true;
+            if (isMobile) {
+                mobileSwipeHint.classList.add("hidden");
+            } else {
+                scrollInstruction.classList.add("hidden");
+            }
+        }
+
+
+        if (e.deltaY > 0) {
+            if (currentPinIndex === PIN_CONFIG.length - 1) {
+                openContact();
+                e.stopPropagation();   // optional
+                return;                // consume
+            }
+            if (!contactOpen) goToPin(currentPinIndex + 1, true, false);
+        } else {
+            // scrolling up
+                if (contactOpen) {
+                    closeContact();
+                    e.stopPropagation();   // ✅ optional but helpful
+                    return;                // ✅ CRITICAL: consume this scroll event
+                }
+                goToPin(Math.max(currentPinIndex - 1, 0), true, false);
+            }
+
+
+
+      }, { passive: false });
+
+      // touch support for mobile
+      let touchStartY = null;
+      let touchStartX = null;
+    let touchLocked = null; // "h" | "v" once we decide direction
+
+    window.addEventListener("touchstart", (e) => {
+  if (!isMobile) return;
+  if (!e.touches || !e.touches.length) return;
+
+  // If the user starts a gesture inside the contact form, don't hijack it
+  if (contactOpen && e.target.closest && e.target.closest(".contact-card")) return;
+
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  touchLocked = null;
+}, { passive: true });
+
+
+window.addEventListener("touchend", (e) => {
+  if (!isMobile) return;
+  if (touchStartX == null || touchStartY == null) return;
+
+  const now = Date.now();
+  if (now - lastScrollTime < scrollDebounce || isTransitioning) return;
+  lastScrollTime = now;
+
+  const endTouch = (e.changedTouches && e.changedTouches[0])
+    ? e.changedTouches[0]
+    : { clientX: touchStartX, clientY: touchStartY };
+
+  const dx = touchStartX - endTouch.clientX; // + means swiped left
+  const dy = touchStartY - endTouch.clientY; // + means swiped up
+
+  // reset
+  touchStartX = null;
+  touchStartY = null;
+
+  // Decide if gesture is horizontal or vertical
+  const absX = Math.abs(dx);
+  const absY = Math.abs(dy);
+
+  // thresholds (tune)
+  const H_THRESH = 40;   // px
+  const V_THRESH = 40;   // px
+
+  if (!hasScrolled) {
+    hasScrolled = true;
+    if (isMobile) {
+        mobileSwipeHint.classList.add("hidden");
+    } else {
+        scrollInstruction.classList.add("hidden");
+    }
+  }
+
+
+  // CONTACT OPEN: first swipe closes it, doesn't navigate
+  if (contactOpen) {
+    // choose a close gesture: swipe down OR swipe right OR swipe up
+    if (absY > V_THRESH || dx < -H_THRESH) { // swipe down/up OR swipe right
+      closeContact();
+      return;
+    }
+    return;
+  }
+
+  // Horizontal swipe
+  if (absX > absY && absX > H_THRESH) {
+    if (dx > 0) {
+      // swipe left => next
+      if (currentPinIndex === PIN_CONFIG.length - 1) {
+        openContact();
+        return;
+      }
+      goToPin(currentPinIndex + 1, true, false);
+    } else {
+      // swipe right => prev
+      goToPin(Math.max(currentPinIndex - 1, 0), true, false);
+    }
+    return;
+  }
+
+  // Vertical swipe (keep your existing behavior)
+  if (absY > V_THRESH) {
+    if (dy > 0) {
+      // swipe up => next
+      if (currentPinIndex === PIN_CONFIG.length - 1) {
+        openContact();
+        return;
+      }
+      goToPin(currentPinIndex + 1, true, false);
+    } else {
+      // swipe down => prev
+      goToPin(Math.max(currentPinIndex - 1, 0), true, false);
+    }
+  }
+}, { passive: true });
+
+    }
+
+    function setupKeyboardNavigation() {
+        
+        document.addEventListener("keydown", (e) => {
+  if (isTransitioning) return;
+
+  // ✅ If contact is open, consume one keypress to close it (and stop)
+  if (contactOpen) {
+    if (e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "PageUp" || e.key === "Escape") {
+      e.preventDefault();
+      closeContact();
+      return;
+    }
+    // Optional: allow down/right to keep it open (or ignore)
+    if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === "PageDown") {
+      e.preventDefault();
+      return;
+    }
+  }
+
+  if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === "PageDown") {
+    e.preventDefault();
+    if (currentPinIndex === PIN_CONFIG.length - 1) {
+      openContact();
+      return;
+    }
+    goToPin(Math.min(currentPinIndex + 1, PIN_CONFIG.length - 1), true, false);
+  } else if (e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "PageUp") {
+    e.preventDefault();
+    goToPin(Math.max(currentPinIndex - 1, 0), true, false);
+  } else if (e.key === "Escape") {
+    // optional close
+    if (contactOpen) closeContact();
+  }
+});
+
+    }
+
+    function goToPin(targetIndex, animate = true, isButtonJump = false) {
+      if (targetIndex === currentPinIndex) return;
+      if (targetIndex < 0 || targetIndex >= PIN_CONFIG.length) return;
+        // ✅ If contact modal is open, do not allow pin transitions
+        if (contactOpen) return;
+
+      const myToken = ++transitionToken;
+      isTransitioning = true;
+
+      const fromIndex = currentPinIndex;
+      const toIndex = targetIndex;
+      // ✅ update highlight immediately on desktop too
+    updateNavAndDotsFor(toIndex);
+
+
+      // MOBILE: use phone_vid.mp4 and play through to the next pin time
+      // (no scrubbing feel; it's pre-edited for phone)
+      if (isMobile) {
+        hideAllMobileOverlays();
+
+        // ✅ highlight immediately (no lag)
+        updateNavAndDotsFor(toIndex);
+
+        applyMobileVideoTransform(PIN_CONFIG[toIndex]);
+
+        playToTime(PIN_CONFIG[toIndex].time, myToken, () => {
+            if (transitionToken !== myToken) return;
+
+            currentPinIndex = toIndex;
+            isTransitioning = false;
+
+            updateNavAndDots();
+            showMobileOverlay(toIndex);
+        }, isButtonJump);
+
+
+        return;
+      }
+
+      // DESKTOP: keep your existing scrub + crossfade overlay behavior
+      const startTime = video.currentTime || PIN_CONFIG[fromIndex].time;
+      const endTime = PIN_CONFIG[toIndex].time;
+      const duration = isButtonJump ? DESKTOP_BUTTON_DURATION : DESKTOP_SCROLL_DURATION;
+
+      renderDesktopOverlayState(fromIndex, 1);
+      renderDesktopOverlayState(toIndex, 0);
+
+      animateVideoTimeWithOverlay(startTime, endTime, duration, myToken, (easeProgress) => {
+        const t = clamp01((easeProgress - DESKTOP_OVERLAY_FADE_START) / (1 - DESKTOP_OVERLAY_FADE_START));
+        renderDesktopOverlayState(fromIndex, 1 - t);
+        renderDesktopOverlayState(toIndex, t);
+      }, () => {
+        if (transitionToken !== myToken) return;
+        video.pause();
+        video.currentTime = endTime;
+
+        currentPinIndex = toIndex;
+        isTransitioning = false;
+        updateNavAndDots();
+
+        renderDesktopOverlayState(fromIndex, 0);
+        renderDesktopOverlayState(toIndex, 1);
+      });
+    }
+
+    function updateNavAndDots() {
+  document.querySelectorAll(".nav-link").forEach((b, i) =>
+    b.classList.toggle("active", i === currentPinIndex)
+  );
+  document.querySelectorAll(".progress-dot").forEach((d, i) =>
+    d.classList.toggle("active", i === currentPinIndex)
+  );
+
+  updateMobileNavWindow(currentPinIndex); // ✅ keep 3-button window synced
+}
+
+function updateNavAndDotsFor(index) {
+  document.querySelectorAll(".nav-link").forEach((b, i) =>
+    b.classList.toggle("active", i === index)
+  );
+  document.querySelectorAll(".progress-dot").forEach((d, i) =>
+    d.classList.toggle("active", i === index)
+  );
+
+  updateMobileNavWindow(index); // ✅ update window immediately (no lag)
+}
+
+
+
+    function animateVideoTimeWithOverlay(startTime, endTime, duration, myToken, onProgress, onDone) {
+      const startTS = performance.now();
+
+      function step(now) {
+        if (transitionToken !== myToken) return;
+        const p = Math.min((now - startTS) / duration, 1);
+        const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+
+        video.currentTime = startTime + (endTime - startTime) * ease;
+        onProgress(ease);
+
+        if (p < 1) requestAnimationFrame(step);
+        else onDone();
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    // Mobile: play forward until reaching time t, then pause and callback.
+    // Mobile: play (or step reverse) until reaching time t, then pause and callback.
+// If fast=true (button/dot taps), use higher playbackRate / reverse speed.
+    function playToTime(targetTime, myToken, done, fast = false) {
+        const EPS = 0.05;
+
+        const from = video.currentTime;
+        const goingForward = targetTime >= from;
+
+        // tune these
+        const FORWARD_RATE_NORMAL = 1.0;
+        const FORWARD_RATE_FAST   = 2.75;  // <-- adjust to taste (2.0–4.0 is typical)
+
+        const REVERSE_SPEED_NORMAL = 1.6;  // seconds per second (your old value)
+        const REVERSE_SPEED_FAST   = 4.0;  // <-- adjust to taste
+
+        const cleanup = () => {
+            video.removeEventListener("timeupdate", onTime);
+            // always restore
+            video.playbackRate = 1.0;
+        };
+
+        const finish = () => {
+            video.pause();
+            video.playbackRate = 1.0;
+            seekTo(targetTime, () => {
+            cleanup();
+            done();
+            });
+        };
+
+        const onTime = () => {
+            if (transitionToken !== myToken) { cleanup(); return; }
+
+            if (goingForward) {
+            if (video.currentTime >= targetTime - EPS) finish();
+            } else {
+            if (video.currentTime <= targetTime + EPS) finish();
+            }
+        };
+
+        video.addEventListener("timeupdate", onTime);
+
+        if (goingForward) {
+            // forward play (fast on button taps)
+            video.playbackRate = fast ? FORWARD_RATE_FAST : FORWARD_RATE_NORMAL;
+
+            const p = video.play();
+            if (p && typeof p.catch === "function") {
+            p.catch(() => {
+                // if autoplay blocked, just snap
+                cleanup();
+                seekTo(targetTime, done);
+            });
+            }
+            return;
+        }
+
+        // REVERSE: step back with requestAnimationFrame (works everywhere)
+        video.pause();
+        video.playbackRate = 1.0;
+
+        const speed = fast ? REVERSE_SPEED_FAST : REVERSE_SPEED_NORMAL;
+        let lastTS = performance.now();
+
+        function step(now) {
+            if (transitionToken !== myToken) { cleanup(); return; }
+
+            const dt = (now - lastTS) / 1000;
+            lastTS = now;
+
+            video.currentTime = Math.max(0, video.currentTime - dt * speed);
+
+            if (video.currentTime <= targetTime + EPS) {
+            finish();
+            return;
+            }
+            requestAnimationFrame(step);
+        }
+
+        requestAnimationFrame(step);
+    }
+
+
+
+    function seekTo(t, done) {
+      let finished = false;
+
+      const cleanup = () => {
+        video.removeEventListener("seeked", onSeeked);
+        video.removeEventListener("canplay", onCanPlay);
+      };
+
+      const finalize = () => {
+        if (finished) return;
+        finished = true;
+        cleanup();
+        done();
+      };
+
+      const onSeeked = () => finalize();
+      const onCanPlay = () => {
+        if (Math.abs(video.currentTime - t) < 0.08) finalize();
+      };
+
+      video.addEventListener("seeked", onSeeked);
+      video.addEventListener("canplay", onCanPlay);
+
+      if (typeof video.fastSeek === "function") {
+        try { video.fastSeek(t); }
+        catch { video.currentTime = t; }
+      } else {
+        video.currentTime = t;
+      }
+
+      setTimeout(finalize, 450);
+    }
+
+    // Desktop overlay render helpers
+    function renderDesktopOverlayState(pinIndex, alpha) {
+      const cards = desktopCardsByPin.get(pinIndex);
+      if (!cards) return;
+      const a = clamp01(alpha);
+      cards.forEach(card => setDesktopCardVisual(card, a));
+    }
+
+    function setDesktopCardVisual(card, alpha) {
+      const y = 18 * (1 - alpha);
+      card.style.opacity = String(alpha);
+      card.style.transform = `translateY(${y}px)`;
+      card.style.pointerEvents = alpha > 0.05 ? "auto" : "none";
+    }
+
+    // Mobile overlays
+    function hideAllMobileOverlays() {
+      document.querySelectorAll(".content-overlay").forEach(o => o.classList.remove("visible"));
+    }
+
+    function showMobileOverlay(index) {
+      const overlay = mobileOverlaysContainer.querySelector(`.content-overlay[data-index="${index}"]`);
+      if (overlay) setTimeout(() => overlay.classList.add("visible"), 120);
+    }
+
+    // NEW: mobile video framing via CSS variables (easy to tweak per pin)
+    function applyMobileVideoTransform(pin) {
+      if (!isMobile) return;
+      const mv = pin.mobileVideo || { xVW: 0, yVH: 0, scale: 1.0 };
+      const x = Number(mv.xVW || 0);
+      const y = Number(mv.yVH || 0);
+      const s = Number(mv.scale || 1.0);
+
+      video.style.setProperty("--m-x", `${x}vw`);
+      video.style.setProperty("--m-y", `${y}vh`);
+      video.style.setProperty("--m-scale", String(s));
+    }
+
+    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+
+    // Always pause on load (never autoplay)
+    video.pause();
+  </script>
+</body>
+</html>
